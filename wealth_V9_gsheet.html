@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>高奢菁英 | 個人資產指揮中心</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-ivory: #FDFCF8; --card-bg: #FFFFFF; --text-navy: #1A2436;
+            --text-muted: #8A94A6; --accent-gold: #C5A059; --up-red: #D96B6B;
+            --down-green: #549B7B; --shadow-soft: 0 16px 40px rgba(26, 36, 54, 0.04);
+            --border-light: rgba(26, 36, 54, 0.05); --transition-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-ivory); color: var(--text-navy); font-family: 'Inter', 'Noto Sans TC', sans-serif; -webkit-font-smoothing: antialiased; padding-top: 80px; padding-bottom: 80px; }
+        h1, h2, h3 { font-family: 'Noto Serif TC', serif; font-weight: 600; }
+        .num { font-family: 'Inter', sans-serif; }
+        .color-up { color: var(--up-red); } .color-down { color: var(--down-green); } .color-gold { color: var(--accent-gold); }
+        
+        .app-container { max-width: 480px; margin: 0 auto; padding: 24px 20px; position: relative; }
+
+        .top-nav {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; height: 70px;
+            background: rgba(253, 252, 248, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 1000; display: flex; justify-content: space-around; align-items: center;
+            border-bottom: 1px solid var(--border-light); box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+        .nav-item {
+            text-decoration: none; color: var(--text-muted); font-size: 13px; font-weight: 500; 
+            display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            transition: var(--transition-smooth); position: relative; padding: 10px 0; cursor: pointer;
+        }
+        .nav-item i { font-size: 18px; }
+        .nav-item.active { color: var(--text-navy); }
+        .nav-item.active::after {
+            content: ''; position: absolute; bottom: 0; left: 20%; width: 60%;
+            height: 2px; background: var(--accent-gold); border-radius: 2px;
+        }
+
+        .hero-section { text-align: center; padding: 20px 0 30px; position: relative; transition: var(--transition-smooth); }
+        .sync-btn-wrapper { position: absolute; top: -10px; right: 0; }
+        .sync-btn { background: none; border: none; color: var(--accent-gold); font-size: 22px; cursor: pointer; transition: var(--transition-smooth); }
+        .sync-btn.spin { animation: spin 1s linear infinite; opacity: 0.5; pointer-events: none; }
+        .hero-title { font-size: 13px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 8px; font-family: 'Noto Sans TC'; transition: var(--transition-smooth);}
+        .hero-amount { font-size: 42px; font-weight: 700; letter-spacing: -1px; margin-bottom: 16px; display: flex; justify-content: center; align-items: baseline; gap: 4px;}
+        .hero-amount .currency { font-size: 22px; color: var(--accent-gold); font-weight: 500;}
+        .hero-sub-info { display: flex; justify-content: center; gap: 24px; font-size: 13px; }
+        .hero-sub-info div { display: flex; flex-direction: column; }
+        .hero-sub-info span { color: var(--text-muted); margin-bottom: 4px;}
+
+        .card { background-color: var(--card-bg); border-radius: 24px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--border-light); overflow: hidden; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; }
+        .card-title { font-size: 18px; margin-bottom: 4px; }
+        .card-subtitle { font-size: 12px; color: var(--text-muted); }
+        .card-value { font-size: 24px; font-weight: 600; margin-bottom: 4px; text-align: right;}
+        .card-roi { font-size: 14px; font-weight: 500; text-align: right;}
+        .card-footer-time { font-size: 11px; color: var(--text-muted); text-align: right; padding-top: 12px; border-top: 1px dashed var(--border-light); margin-top: 12px; }
+
+        .list-container { max-height: 0; opacity: 0; overflow: hidden; transition: var(--transition-smooth); }
+        .card.expanded .list-container { max-height: 2000px; opacity: 1; margin-top: 20px; border-top: 1px solid var(--border-light); padding-top: 16px; }
+        .list-item { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 12px 0; border-bottom: 1px solid var(--border-light); font-size: 14px; }
+        .list-item:last-child { border-bottom: none; }
+        .item-col { display: flex; flex-direction: column; gap: 4px;}
+        .item-col.right { align-items: flex-end; }
+        .item-main { font-weight: 600; }
+        .item-sub { font-size: 12px; color: var(--text-muted); }
+
+        #history-content { display: none; } 
+        
+        .history-controls { 
+            display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px; margin-bottom: 16px; 
+            justify-content: flex-start; padding-bottom: 4px;
+            -ms-overflow-style: none; scrollbar-width: none; 
+        }
+        .history-controls::-webkit-scrollbar { display: none; } 
+        
+        .hero-btn { 
+            white-space: nowrap; flex-shrink: 0; 
+            background: var(--bg-ivory); color: var(--text-muted); border: 1px solid var(--border-light); 
+            padding: 7px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; 
+            cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: var(--transition-smooth); 
+        }
+        .hero-btn:active { transform: scale(0.96); }
+        .hero-btn.active-hero { 
+            background: linear-gradient(135deg, #C5A059, #D4AF37); color: white; border-color: transparent;
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3); 
+        }
+        .hero-btn.dark-btn { background: #3A4A63; color: white; border: none; }
+        .hero-btn.dark-btn.active-hero { background: #1A2436; box-shadow: 0 4px 12px rgba(26, 36, 54, 0.3); }
+
+        .history-grid { 
+            display: grid; 
+            grid-template-columns: 1.4fr 1.1fr 1.1fr 1.1fr 1.8fr 1.8fr; 
+            gap: 4px; align-items: center; font-size: 12px; text-align: right; 
+            padding: 14px 0; border-bottom: 1px solid var(--border-light); 
+        }
+        .history-grid:last-child { border-bottom: none; }
+        .history-grid .col-name { text-align: left; font-weight: 600; font-size: 14px; }
+        
+        .progress-bar-container { width: 100%; background-color: var(--border-light); border-radius: 4px; height: 4px; margin-top: 10px; overflow: hidden; display: none; }
+        .progress-bar { height: 100%; background-color: var(--accent-gold); width: 0%; transition: width 0.3s ease; }
+
+        /* 調整持股模組 */
+        #edit-content { display: none; }
+
+        /* 持股列表行 */
+        .edit-item { display: flex; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--border-light); }
+        .edit-item:last-child { border-bottom: none; }
+        .edit-symbol { font-weight: 700; font-size: 13px; width: 54px; color: var(--text-navy); letter-spacing: 0.3px; flex-shrink: 0; }
+        .edit-inputs { display: flex; gap: 8px; flex: 1; }
+        .edit-input-wrapper { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+        .edit-label { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+        .edit-input { width: 100%; border: 1.5px solid var(--border-light); border-radius: 8px; padding: 7px 9px; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--bg-ivory); color: var(--text-navy); outline: none; transition: 0.2s; }
+        .edit-input:focus { border-color: var(--accent-gold); background: #FFF; box-shadow: 0 0 0 3px rgba(197,160,89,0.08); }
+
+        /* ✨ 精煉按鈕系統 */
+        .btn-action-group { display: flex; gap: 6px; flex-shrink: 0; }
+
+        /* 儲存鈕：金色細線輪廓，簡約有質感 */
+        .btn-save {
+            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 10px;
+            background: transparent;
+            border: 1.5px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 13px; cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .btn-save:hover { background: var(--accent-gold); color: white; }
+        .btn-save:active { transform: scale(0.92); }
+
+        /* 刪除鈕：極簡灰底，hover 才顯紅 */
+        .btn-del {
+            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 10px;
+            background: transparent;
+            border: 1.5px solid rgba(26,36,54,0.08);
+            color: #B0B8C8;
+            font-size: 12px; cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .btn-del:hover { border-color: rgba(217,107,107,0.4); color: var(--up-red); background: rgba(217,107,107,0.05); }
+        .btn-del:active { transform: scale(0.92); }
+
+        /* 新增按鈕：深色實心 */
+        .btn-add-stock {
+            width: 100%; padding: 13px; border-radius: 12px;
+            background: var(--text-navy); color: white;
+            border: none; font-size: 13px; font-weight: 600;
+            letter-spacing: 0.5px; cursor: pointer;
+            margin-top: 12px; transition: var(--transition-smooth);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-add-stock:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* 現金更新鈕 */
+        .btn-cash-update {
+            flex-shrink: 0; padding: 8px 16px; border-radius: 10px;
+            background: transparent; border: 1.5px solid var(--accent-gold);
+            color: var(--accent-gold); font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: var(--transition-smooth); letter-spacing: 0.3px;
+        }
+        .btn-cash-update:hover { background: var(--accent-gold); color: white; }
+        .btn-cash-update:active { transform: scale(0.96); }
+
+        /* ✨ 變更紀錄面板 */
+        .changelog-panel {
+            background: var(--card-bg); border-radius: 20px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 20px; overflow: hidden;
+        }
+        .changelog-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light);
+        }
+        .changelog-title { font-family: 'Noto Serif TC', serif; font-size: 16px; font-weight: 600; }
+        .changelog-badge {
+            background: var(--up-red); color: white;
+            font-size: 11px; font-weight: 700;
+            padding: 2px 8px; border-radius: 20px; min-width: 22px; text-align: center;
+        }
+        .changelog-badge.empty { background: #D0D5DF; }
+        .changelog-empty {
+            padding: 20px; text-align: center;
+            color: var(--text-muted); font-size: 13px;
+        }
+        .changelog-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 20px; border-bottom: 1px solid var(--border-light);
+            font-size: 13px;
+        }
+        .changelog-row:last-child { border-bottom: none; }
+        .changelog-left { display: flex; align-items: center; gap: 10px; }
+        .changelog-tag {
+            font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+            padding: 2px 7px; border-radius: 6px;
+        }
+        .tag-edit { background: rgba(197,160,89,0.12); color: var(--accent-gold); }
+        .tag-add  { background: rgba(84,155,123,0.12); color: var(--down-green); }
+        .tag-del  { background: rgba(217,107,107,0.12); color: var(--up-red); }
+        .tag-cash { background: rgba(26,36,54,0.07); color: var(--text-navy); }
+        .changelog-symbol { font-weight: 700; color: var(--text-navy); }
+        .changelog-right { font-size: 12px; color: var(--text-muted); text-align: right; line-height: 1.6; }
+
+        /* ✨ 雲端同步狀態列 */
+        .cloud-status {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--text-muted);
+            padding: 10px 16px; background: var(--bg-ivory);
+            border-radius: 12px; margin-bottom: 16px;
+            border: 1px solid var(--border-light);
+        }
+        .cloud-status .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #ccc; flex-shrink: 0;
+        }
+        .cloud-status.synced .dot { background: var(--down-green); }
+        .cloud-status.syncing .dot { background: var(--accent-gold); animation: pulse 1s infinite; }
+        .cloud-status.error .dot { background: var(--up-red); }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .save-to-cloud-btn {
+            width: 100%; padding: 14px; border-radius: 14px;
+            background: linear-gradient(135deg, #1A2436, #2C3A50);
+            color: white; border: none; font-size: 14px; font-weight: 600;
+            cursor: pointer; margin-top: 8px; transition: var(--transition-smooth);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .save-to-cloud-btn:active { transform: scale(0.98); }
+        .save-to-cloud-btn:disabled { opacity: 0.5; pointer-events: none; }
+
+        .toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: rgba(26, 36, 54, 0.9); backdrop-filter: blur(10px); color: white; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 500; transition: var(--transition-smooth); z-index: 9999; pointer-events: none; opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .toast.show { bottom: 100px; opacity: 1; }
+
+        .footer { text-align: center; font-size: 11px; color: #A0A5B1; margin-top: 40px; letter-spacing: 1px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="nav-item active" onclick="navTo('dashboard', this)">
+        <i class="fa-solid fa-house-chimney-window"></i>
+        <span>資產概覽</span>
+    </div>
+    <div class="nav-item" onclick="navTo('records', this)">
+        <i class="fa-solid fa-receipt"></i>
+        <span>交易紀錄</span>
+    </div>
+    <div class="nav-item" onclick="navTo('history', this)">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>歷史績效</span>
+    </div>
+    <div class="nav-item" onclick="navTo('edit', this)">
+        <i class="fa-solid fa-sliders"></i>
+        <span>調整持股</span>
+    </div>
+</nav>
+
+<div class="app-container">
+    <header class="hero-section">
+        <div class="sync-btn-wrapper">
+            <button class="sync-btn" id="syncBtn" onclick="refreshData()" title="重新整理">⟳</button>
+        </div>
+        <div class="hero-title" id="hero-main-title">總資產淨值</div>
+        <div class="hero-amount"><span class="currency">NT$</span><span class="num" id="grand-total">0</span></div>
+        <div class="hero-sub-info">
+            <div><span>總投資成本</span><strong class="num" id="grand-cost">0</strong></div>
+            <div><span>總報酬率</span><strong class="num color-up" id="grand-roi">+0.00%</strong></div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <div id="dashboard-content">
+            <div class="card" id="card-tw" onclick="toggleCard('card-tw')">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title">台股資產</h2>
+                        <span class="card-subtitle">總成本 <span class="num" id="tw-cost">0</span></span>
+                    </div>
+                    <div>
+                        <div class="card-value num" id="tw-net">0</div>
+                        <div class="card-roi num color-up" id="tw-roi">+0.00%</div>
+                    </div>
+                </div>
+                <div class="list-container" id="tw-list"></div>
+                <div class="card-footer-time" id="tw-update-time">來源報價：連線中...</div>
+            </div>
+
+            <div class="card" id="card-us" onclick="toggleCard('card-us')">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title">美股資產</h2>
+                        <span class="card-subtitle">總成本 <span class="num" id="us-cost">0</span></span>
+                    </div>
+                    <div>
+                        <div class="card-value num" id="us-net">0</div>
+                        <div class="card-roi num color-up" id="us-roi">+0.00%</div>
+                    </div>
+                </div>
+                <div class="list-container" id="us-list"></div>
+                <div class="card-footer-time" id="us-update-time">來源報價：連線中...</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="cursor: default; margin-bottom: 0;">
+                    <div class="card-title-group">
+                        <h2 class="card-title">現金資產</h2>
+                        <span class="card-subtitle" id="exchange-rate-display">即時匯率 USD/TWD = ...</span>
+                    </div>
+                    <div>
+                        <div class="card-value num" id="cash-total">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="history-content">
+            <div class="history-controls">
+                <button class="hero-btn" onclick="setHeroMode('d1Pct', this)">英雄榜(日漲幅)</button>
+                <button class="hero-btn" onclick="setHeroMode('d1Profit', this)">英雄榜(日獲利)</button>
+                <button class="hero-btn" onclick="setHeroMode('d30Profit', this)">英雄榜(月獲利)</button>
+                <button class="hero-btn dark-btn active-hero" onclick="setHeroMode('default', this)">預設</button>
+            </div>
+            <div class="card">
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;">
+                    <div class="card-title-group">
+                        <h2 class="card-title">資產趨勢與獲利矩陣</h2>
+                        <span class="card-subtitle" id="history-status">點擊載入歷史數據...</span>
+                    </div>
+                </div>
+                <div class="progress-bar-container" id="history-progress-container">
+                    <div class="progress-bar" id="history-progress"></div>
+                </div>
+                <div id="history-list-container">
+                    <div style="text-align:center; padding: 30px; color:var(--text-muted); font-size: 13px;">正在等待引擎啟動...</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-content">
+
+            <!-- 雲端狀態列 -->
+            <div class="cloud-status" id="cloud-status">
+                <div class="dot"></div>
+                <span id="cloud-status-text">尚未連線至 Google Sheets</span>
+            </div>
+
+            <!-- 新增持股 -->
+            <div class="card">
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;">
+                    <div class="card-title-group">
+                        <h2 class="card-title">新增持股</h2>
+                    </div>
+                </div>
+                <div class="edit-item" style="border:none; padding-bottom: 0;">
+                    <div class="edit-inputs" style="margin:0; flex-wrap: nowrap;">
+                        <div class="edit-input-wrapper" style="flex: 0.7;">
+                            <span class="edit-label">市場</span>
+                            <select id="add-market" class="edit-input" style="padding: 6px 8px;">
+                                <option value="TW">TW</option>
+                                <option value="US">US</option>
+                            </select>
+                        </div>
+                        <div class="edit-input-wrapper" style="flex: 1.1;">
+                            <span class="edit-label">代號</span>
+                            <input type="text" id="add-symbol" class="edit-input" placeholder="ex: 2330">
+                        </div>
+                        <div class="edit-input-wrapper">
+                            <span class="edit-label">股數</span>
+                            <input type="number" id="add-shares" class="edit-input" placeholder="0" step="any">
+                        </div>
+                        <div class="edit-input-wrapper">
+                            <span class="edit-label">成本</span>
+                            <input type="number" id="add-cost" class="edit-input" placeholder="0" step="any">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-add-stock" onclick="addNewStock()">
+                    <i class="fa-solid fa-plus" style="font-size:11px;"></i> 加入投資組合
+                </button>
+            </div>
+
+            <!-- 台股部位管理 -->
+            <div class="card">
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;">
+                    <div class="card-title-group">
+                        <h2 class="card-title">台股部位管理</h2>
+                    </div>
+                </div>
+                <div id="edit-tw-list"></div>
+            </div>
+
+            <!-- 美股部位管理 -->
+            <div class="card">
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;">
+                    <div class="card-title-group">
+                        <h2 class="card-title">美股部位管理</h2>
+                    </div>
+                </div>
+                <div id="edit-us-list"></div>
+            </div>
+
+            <!-- 現金水位調整（移至美股下方） -->
+            <div class="card">
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;">
+                    <div class="card-title-group">
+                        <h2 class="card-title">現金水位調整</h2>
+                    </div>
+                </div>
+                <div class="edit-item" style="border: none; padding-bottom: 0;">
+                    <div class="edit-symbol">TWD</div>
+                    <div class="edit-inputs">
+                        <div class="edit-input-wrapper">
+                            <span class="edit-label">總金額</span>
+                            <input type="number" id="edit-cash-input" class="edit-input" value="0">
+                        </div>
+                    </div>
+                    <button class="btn-cash-update" onclick="saveCash()">更新</button>
+                </div>
+            </div>
+
+            <!-- ✨ 變更確認紀錄面板 -->
+            <div class="changelog-panel" id="changelog-panel">
+                <div class="changelog-header">
+                    <span class="changelog-title">本次變更紀錄</span>
+                    <span class="changelog-badge empty" id="changelog-badge">0</span>
+                </div>
+                <div id="changelog-body">
+                    <div class="changelog-empty">尚無任何變更</div>
+                </div>
+            </div>
+
+            <!-- 雲端儲存按鈕 -->
+            <button class="save-to-cloud-btn" id="saveCloudBtn" onclick="saveToCloud()">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                儲存全部變更至 Google Sheets
+            </button>
+
+        </div>
+    </main>
+
+    <div class="footer" id="last-update">資料載入中，請稍候...</div>
+    <div id="toast" class="toast">更新成功</div>
+</div>
+
+<script>
+    // ============================================================
+    // 🌟 Google Apps Script API 網址（已設定完成）
+    // ============================================================
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0e_906blgd80-lI4cHRd3ieSZuROr37uFRxf9TgFfFDulPVWhEY7632AAlR1wSKZvXA/exec';
+    // ============================================================
+
+    const appData = {
+        cash: 0,
+        settings: { usdToTwd: 31.50 },
+        twStocks: [], usStocks: [], history: [],
+        totals: { grandNet: 0, grandCost: 0, stockNet: 0, stockCost: 0 },
+        marketTime: { tw: null, us: null }
+    };
+
+    let twseDataMap = null;
+    let isHistoryLoaded = false;
+    let isDataInitialized = false;
+    let currentHeroMode = 'default';
+    let currentTab = 'dashboard';
+
+    const formatMoney = (num) => num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    const formatDecimal = (num) => num.toLocaleString('en-US', { maximumFractionDigits: 3 });
+    const formatPercent = (num) => (num > 0 ? '+' : '') + num.toFixed(2) + '%';
+    const getColorClass = (num) => num > 0 ? 'color-up' : (num < 0 ? 'color-down' : '');
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    const formatUnixTime = (unixMs) => {
+        if (!unixMs) return "依來源方最新收盤價";
+        const d = new Date(unixMs);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    };
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); }, 2500);
+    }
+
+    function setCloudStatus(state, msg) {
+        const el = document.getElementById('cloud-status');
+        const txt = document.getElementById('cloud-status-text');
+        el.className = 'cloud-status ' + state;
+        txt.innerText = msg;
+    }
+
+    // ============================================================
+    // ✨ 核心：從 Google Sheets 讀取資料
+    // ============================================================
+    async function loadFromGoogleSheets() {
+        setCloudStatus('syncing', '正在從 Google Sheets 讀取資料...');
+        try {
+            const res = await fetch(GAS_URL);
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            appData.twStocks = [];
+            appData.usStocks = [];
+            appData.cash = data.cash || 0;
+
+            data.holdings.forEach(h => {
+                const stockObj = {
+                    symbol: h.symbol,
+                    shares: h.shares,
+                    costPrice: h.costPrice,
+                    currentPrice: null,
+                    isError: true
+                };
+                if (h.market === 'TW') appData.twStocks.push(stockObj);
+                else if (h.market === 'US') appData.usStocks.push(stockObj);
+            });
+
+            isDataInitialized = true;
+            setCloudStatus('synced', `已從 Google Sheets 載入 ${data.holdings.length} 筆持股`);
+            return true;
+        } catch(e) {
+            setCloudStatus('error', '無法連線至 Google Sheets，請稍後再試');
+            return false;
+        }
+    }
+
+    // ============================================================
+    // ✨ 核心：將變更儲存回 Google Sheets
+    // ============================================================
+    async function saveToCloud() {
+        const btn = document.getElementById('saveCloudBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 儲存中...';
+        setCloudStatus('syncing', '正在儲存至 Google Sheets...');
+
+        const payload = {
+            cash: appData.cash,
+            holdings: [
+                ...appData.twStocks.map(s => ({ market: 'TW', symbol: s.symbol, shares: s.shares, costPrice: s.costPrice })),
+                ...appData.usStocks.map(s => ({ market: 'US', symbol: s.symbol, shares: s.shares, costPrice: s.costPrice }))
+            ]
+        };
+
+        try {
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                setCloudStatus('synced', '✅ 已成功儲存至 Google Sheets');
+                showToast('☁️ 已同步至 Google Sheets！');
+                // 清空變更紀錄
+                changelog.length = 0;
+                renderChangelog();
+            } else {
+                throw new Error(result.error || '未知錯誤');
+            }
+        } catch(e) {
+            setCloudStatus('error', '❌ 儲存失敗：' + e.message);
+            showToast('❌ 儲存失敗，請再試一次');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> 儲存全部變更至 Google Sheets';
+        }
+    }
+
+    function updateHeroBanner(view) {
+        const titleEl = document.getElementById('hero-main-title');
+        if (view === 'history' || view === 'edit' || view === 'records') {
+            titleEl.innerText = '股票資產總淨值';
+            animateValue("grand-total", appData.totals.stockNet);
+            document.getElementById("grand-cost").innerText = formatMoney(appData.totals.stockCost);
+            const roi = appData.totals.stockCost === 0 ? 0 : ((appData.totals.stockNet - appData.totals.stockCost) / appData.totals.stockCost) * 100;
+            document.getElementById("grand-roi").innerText = formatPercent(roi);
+            document.getElementById("grand-roi").className = `num ${getColorClass(roi)}`;
+        } else {
+            titleEl.innerText = '總資產淨值';
+            animateValue("grand-total", appData.totals.grandNet);
+            document.getElementById("grand-cost").innerText = formatMoney(appData.totals.grandCost);
+            const roi = appData.totals.grandCost === 0 ? 0 : ((appData.totals.stockNet - appData.totals.stockCost) / appData.totals.grandCost) * 100;
+            document.getElementById("grand-roi").innerText = formatPercent(roi);
+            document.getElementById("grand-roi").className = `num ${getColorClass(roi)}`;
+        }
+    }
+
+    function navTo(target, el) {
+        currentTab = target;
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        el.classList.add('active');
+        
+        document.getElementById('dashboard-content').style.display = 'none';
+        document.getElementById('history-content').style.display = 'none';
+        document.getElementById('edit-content').style.display = 'none';
+
+        if (target === 'dashboard') {
+            document.getElementById('dashboard-content').style.display = 'block';
+            updateHeroBanner('dashboard');
+        } else if (target === 'history') {
+            document.getElementById('history-content').style.display = 'block';
+            updateHeroBanner('history');
+            if (!isHistoryLoaded && appData.twStocks.length > 0) loadHistoryData();
+        } else if (target === 'edit') {
+            document.getElementById('edit-content').style.display = 'block';
+            updateHeroBanner('edit');
+            renderEditView();
+        } else {
+            alert(`「${el.querySelector('span').innerText}」模組正在精雕細琢中...`);
+            document.getElementById('dashboard-content').style.display = 'block';
+        }
+    }
+
+    async function loadTWSE() {
+        if (twseDataMap) return;
+        try {
+            const res = await fetch('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL');
+            const data = await res.json();
+            twseDataMap = {};
+            data.forEach(s => { if (s.Code && s.ClosingPrice) twseDataMap[s.Code] = parseFloat(s.ClosingPrice); });
+        } catch (e) { twseDataMap = {}; }
+    }
+
+    async function fetchHybridYahooQuotes(symbolsArray) {
+        if(symbolsArray.length === 0) return {};
+        const symbolsStr = symbolsArray.join(',');
+        const ts = new Date().getTime(); 
+        const batchUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolsStr}&nocache=${ts}`;
+        
+        const proxies = [
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+        ];
+
+        const priceMap = {};
+        let batchSuccess = false;
+
+        for (let proxyGen of proxies) {
+            try {
+                const response = await fetch(proxyGen(batchUrl));
+                if (!response.ok) continue;
+                const data = await response.json();
+                const results = data.quoteResponse.result;
+                if(results && results.length > 0) {
+                    results.forEach(item => {
+                        priceMap[item.symbol] = { price: item.regularMarketPrice, time: item.regularMarketTime * 1000 };
+                    });
+                    batchSuccess = true;
+                    break;
+                }
+            } catch (err) { continue; }
+        }
+
+        if (batchSuccess) return priceMap;
+
+        const fetchIndividual = async (symbol) => {
+            const chartUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d&nocache=${ts}`;
+            for (let proxyGen of proxies) {
+                try {
+                    const response = await fetch(proxyGen(chartUrl));
+                    if (!response.ok) continue;
+                    const data = await response.json();
+                    const meta = data.chart.result[0].meta;
+                    if (meta && meta.regularMarketPrice) {
+                        priceMap[symbol] = { price: meta.regularMarketPrice, time: meta.regularMarketTime * 1000 };
+                        return;
+                    }
+                } catch(e) {}
+            }
+        };
+
+        await Promise.all(symbolsArray.map(sym => fetchIndividual(sym)));
+        return priceMap;
+    }
+
+    async function fetchPricesAndRender() {
+        const symbolsToFetch = ['TWD=X']; 
+        appData.twStocks.forEach(s => symbolsToFetch.push(`${s.symbol}.TW`));
+        appData.usStocks.forEach(s => symbolsToFetch.push(s.symbol));
+
+        const [_, yahooHybridData] = await Promise.all([
+            loadTWSE(),
+            fetchHybridYahooQuotes(symbolsToFetch)
+        ]);
+
+        if (yahooHybridData['TWD=X'] && yahooHybridData['TWD=X'].price) {
+            appData.settings.usdToTwd = yahooHybridData['TWD=X'].price;
+        }
+        document.getElementById('exchange-rate-display').innerText = `即時匯率 USD/TWD = ${appData.settings.usdToTwd.toFixed(2)}`;
+
+        appData.twStocks.forEach(stock => {
+            if (twseDataMap && twseDataMap[stock.symbol]) {
+                stock.currentPrice = Math.round(twseDataMap[stock.symbol] * 100) / 100;
+                stock.isError = false;
+            } else {
+                const yfSymbol = `${stock.symbol}.TW`;
+                const quote = yahooHybridData[yfSymbol];
+                if (quote && quote.price) {
+                    stock.currentPrice = Math.round(quote.price * 100) / 100;
+                    stock.isError = false;
+                    appData.marketTime.tw = Math.max(appData.marketTime.tw || 0, quote.time);
+                } else { stock.isError = true; }
+            }
+        });
+
+        appData.usStocks.forEach(stock => {
+            const quote = yahooHybridData[stock.symbol];
+            if (quote && quote.price) {
+                stock.currentPrice = Math.round(quote.price * 1000) / 1000;
+                stock.isError = false;
+                appData.marketTime.us = Math.max(appData.marketTime.us || 0, quote.time);
+            } else { stock.isError = true; }
+        });
+
+        renderApp();
+        if(currentTab === 'edit') renderEditView();
+    }
+
+    async function refreshData() {
+        const btn = document.getElementById('syncBtn');
+        btn.classList.add('spin');
+        document.getElementById('last-update').innerText = "從 Google Sheets 讀取持股，同步全球報價...";
+        try {
+            // ✨ 先從 Google Sheets 讀取最新持股
+            await loadFromGoogleSheets();
+            // 再抓即時股價
+            await fetchPricesAndRender();
+            
+            const now = new Date();
+            document.getElementById('last-update').innerText = `同步完成：${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            
+            isHistoryLoaded = false;
+            document.getElementById('history-list-container').innerHTML = '<div style="text-align:center; padding: 30px; color:var(--text-muted); font-size: 13px;">資料已更新，請重新載入歷史數據</div>';
+            
+        } catch(e) {
+            document.getElementById('last-update').innerText = "資料載入失敗，請檢查網路。";
+        } finally { 
+            btn.classList.remove('spin'); 
+        }
+    }
+
+    function renderApp() {
+        let twCost = 0, twNet = 0, usCostUSD = 0, usNetUSD = 0;
+        const exRate = appData.settings.usdToTwd;
+
+        const renderList = (stocks, isUS) => stocks.map(s => {
+            const cost = s.costPrice * s.shares;
+            const net = (s.isError ? 0 : s.currentPrice) * s.shares;
+            const profit = net - cost;
+            const roi = s.isError ? 0 : (profit / cost) * 100;
+            if (isUS) { usCostUSD += cost; usNetUSD += net; } else { twCost += cost; twNet += net; }
+            const displayNet = isUS ? net * exRate : net;
+            const displayProfit = isUS ? profit * exRate : profit;
+            return `<div class="list-item">
+                <div class="item-col"><span class="item-main">${s.symbol}</span><span class="item-sub">${formatDecimal(s.shares)} 股</span></div>
+                <div class="item-col" style="text-align:center;"><span class="item-main ${s.isError?'color-down':''}">${s.isError?'⚠️阻擋':(isUS?'$':'')+s.currentPrice.toFixed(2)}</span><span class="item-sub">現價</span></div>
+                <div class="item-col right"><span class="item-main">${s.isError?'--':'NT$ '+formatMoney(displayNet)}</span><span class="item-sub ${getColorClass(displayProfit)}">${s.isError?'--':'NT$ '+formatMoney(displayProfit)+' ('+formatPercent(roi)+')'}</span></div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('tw-list').innerHTML = renderList(appData.twStocks, false);
+        document.getElementById('us-list').innerHTML = renderList(appData.usStocks, true);
+        
+        const twROI = twCost === 0 ? 0 : (twNet - twCost) / twCost * 100;
+        const usNetNTD = usNetUSD * exRate;
+        const usCostNTD = usCostUSD * exRate;
+        const usROI = usCostNTD === 0 ? 0 : (usNetNTD - usCostNTD) / usCostNTD * 100;
+        
+        appData.totals.stockCost = twCost + usCostNTD;
+        appData.totals.stockNet = twNet + usNetNTD;
+        appData.totals.grandCost = appData.totals.stockCost; 
+        appData.totals.grandNet = appData.totals.stockNet + appData.cash;
+
+        updateHeroBanner(currentTab);
+
+        animateValue("tw-net", twNet);
+        animateValue("us-net", usNetNTD);
+        animateValue("cash-total", appData.cash);
+        
+        document.getElementById("tw-cost").innerText = formatMoney(twCost);
+        document.getElementById("tw-roi").innerText = formatPercent(twROI);
+        document.getElementById("tw-roi").className = `card-roi num ${getColorClass(twROI)}`;
+        document.getElementById("us-cost").innerText = `NT$ ${formatMoney(usCostNTD)}`;
+        document.getElementById("us-roi").innerText = formatPercent(usROI);
+        document.getElementById("us-roi").className = `card-roi num ${getColorClass(usROI)}`;
+        
+        let twTimeStr = appData.marketTime.tw ? formatUnixTime(appData.marketTime.tw) : '依證交所最新收盤價';
+        document.getElementById('tw-update-time').innerText = `來源報價：${twTimeStr}`;
+        document.getElementById('us-update-time').innerText = `來源報價：${appData.marketTime.us?formatUnixTime(appData.marketTime.us):'載入中'}`;
+    }
+
+    function toggleCard(id) { document.getElementById(id).classList.toggle('expanded'); }
+    
+    function animateValue(id, end) {
+        const obj = document.getElementById(id);
+        if(!obj) return;
+        const start = parseInt(obj.innerText.replace(/,/g, '')) || 0;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / 800, 1);
+            const current = Math.floor((1 - Math.pow(1 - progress, 4)) * (end - start) + start);
+            obj.innerText = formatMoney(current);
+            if (progress < 1) window.requestAnimationFrame(step);
+            else obj.innerText = formatMoney(end);
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // --- 變更紀錄系統 ---
+    const changelog = [];
+
+    function addChangelog(type, symbol, detail) {
+        // 同一 symbol + type 只保留最新一筆
+        const existing = changelog.findIndex(c => c.symbol === symbol && c.type === type);
+        if (existing !== -1) changelog.splice(existing, 1);
+        changelog.push({ type, symbol, detail, time: new Date() });
+        renderChangelog();
+    }
+
+    function renderChangelog() {
+        const body = document.getElementById('changelog-body');
+        const badge = document.getElementById('changelog-badge');
+        if (!body) return;
+
+        badge.innerText = changelog.length;
+        badge.className = changelog.length > 0 ? 'changelog-badge' : 'changelog-badge empty';
+
+        if (changelog.length === 0) {
+            body.innerHTML = '<div class="changelog-empty">尚無任何變更</div>';
+            return;
+        }
+
+        const tagMap = {
+            'edit': ['EDIT', 'tag-edit'],
+            'add':  ['NEW',  'tag-add'],
+            'del':  ['DEL',  'tag-del'],
+            'cash': ['現金', 'tag-cash']
+        };
+
+        body.innerHTML = changelog.map(c => {
+            const [label, cls] = tagMap[c.type] || ['?', ''];
+            return `<div class="changelog-row">
+                <div class="changelog-left">
+                    <span class="changelog-tag ${cls}">${label}</span>
+                    <span class="changelog-symbol">${c.symbol}</span>
+                </div>
+                <div class="changelog-right">${c.detail}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // --- 調整持股模組 ---
+    function renderEditView() {
+        document.getElementById('edit-cash-input').value = appData.cash;
+
+        const renderEditList = (stocks, market) => {
+            if(stocks.length === 0) return `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:13px;">目前無部位</div>`;
+            return stocks.map((s, index) => `
+                <div class="edit-item">
+                    <div class="edit-symbol">${s.symbol}</div>
+                    <div class="edit-inputs">
+                        <div class="edit-input-wrapper">
+                            <span class="edit-label">股數</span>
+                            <input type="number" id="edit-${market}-shares-${index}" class="edit-input" value="${s.shares}" step="any">
+                        </div>
+                        <div class="edit-input-wrapper">
+                            <span class="edit-label">成本</span>
+                            <input type="number" id="edit-${market}-cost-${index}" class="edit-input" value="${s.costPrice}" step="any">
+                        </div>
+                    </div>
+                    <div class="btn-action-group">
+                        <button class="btn-save" onclick="saveStock('${market}', ${index})" title="儲存">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button class="btn-del" onclick="deleteStock('${market}', ${index})" title="刪除">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        document.getElementById('edit-tw-list').innerHTML = renderEditList(appData.twStocks, 'tw');
+        document.getElementById('edit-us-list').innerHTML = renderEditList(appData.usStocks, 'us');
+        renderChangelog();
+    }
+
+    function saveCash() {
+        const val = parseFloat(document.getElementById('edit-cash-input').value);
+        if(!isNaN(val)) {
+            const old = appData.cash;
+            appData.cash = val;
+            renderApp();
+            addChangelog('cash', 'TWD', `${old.toLocaleString()} → ${val.toLocaleString()}`);
+            showToast('💰 現金已更新');
+        }
+    }
+
+    function saveStock(market, index) {
+        const sharesInput = parseFloat(document.getElementById(`edit-${market}-shares-${index}`).value);
+        const costInput = parseFloat(document.getElementById(`edit-${market}-cost-${index}`).value);
+        if(!isNaN(sharesInput) && !isNaN(costInput)) {
+            const arr = market === 'tw' ? appData.twStocks : appData.usStocks;
+            const sym = arr[index].symbol;
+            const oldShares = arr[index].shares;
+            const oldCost = arr[index].costPrice;
+            arr[index].shares = sharesInput;
+            arr[index].costPrice = costInput;
+            renderApp();
+            isHistoryLoaded = false;
+            addChangelog('edit', sym,
+                `股數 ${oldShares} → ${sharesInput}<br>成本 ${oldCost} → ${costInput}`);
+            showToast('✓ 已暫存');
+        }
+    }
+    
+    function deleteStock(market, index) {
+        if(confirm('確定要刪除這檔持股嗎？')) {
+            const arr = market === 'tw' ? appData.twStocks : appData.usStocks;
+            const sym = arr[index].symbol;
+            arr.splice(index, 1);
+            renderEditView();
+            renderApp();
+            isHistoryLoaded = false;
+            addChangelog('del', sym, '已從投資組合移除');
+            showToast('已移除 ' + sym);
+        }
+    }
+
+    async function addNewStock() {
+        const market = document.getElementById('add-market').value;
+        const symbol = document.getElementById('add-symbol').value.trim().toUpperCase();
+        const shares = parseFloat(document.getElementById('add-shares').value);
+        const cost = parseFloat(document.getElementById('add-cost').value);
+
+        if(!symbol || isNaN(shares) || isNaN(cost)) return alert('請填寫完整的代號、股數與成本！');
+
+        const stockObj = { symbol, shares, costPrice: cost, currentPrice: null, isError: true };
+        if(market === 'TW') {
+            stockObj.symbol = symbol.replace(/\.TW$/i, '').replace(/\.TWO$/i, '');
+            appData.twStocks.push(stockObj);
+        } else {
+            appData.usStocks.push(stockObj);
+        }
+
+        document.getElementById('add-symbol').value = '';
+        document.getElementById('add-shares').value = '';
+        document.getElementById('add-cost').value = '';
+
+        addChangelog('add', stockObj.symbol, `${market} · ${shares} 股 · 成本 ${cost}`);
+        showToast(`已加入 ${stockObj.symbol}，正在同步報價...`);
+        const btn = document.getElementById('syncBtn');
+        btn.classList.add('spin');
+        await fetchPricesAndRender();
+        btn.classList.remove('spin');
+        isHistoryLoaded = false;
+    }
+
+    // --- 歷史績效引擎 ---
+    async function loadHistoryData() {
+        isHistoryLoaded = true;
+        const statusEl = document.getElementById('history-status');
+        const progressContainer = document.getElementById('history-progress-container');
+        const progressBar = document.getElementById('history-progress');
+        
+        statusEl.innerText = "啟動華爾街多重路由，精算獲利矩陣...";
+        progressContainer.style.display = 'block';
+        appData.history = [];
+        
+        const allStocks = [
+            ...appData.twStocks.map(s => ({...s, market: 'TW'})), 
+            ...appData.usStocks.map(s => ({...s, market: 'US'}))
+        ];
+        
+        const total = allStocks.length;
+        let current = 0;
+
+        const proxies = [
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+        ];
+
+        for (let stock of allStocks) {
+            await sleep(600);
+            const yfSymbol = stock.market === 'TW' ? `${stock.symbol}.TW` : stock.symbol;
+            const ts = new Date().getTime();
+            const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yfSymbol}?interval=1d&range=6mo&nocache=${ts}`;
+            let fetchSuccess = false;
+
+            for (let proxyGen of proxies) {
+                if (fetchSuccess) break;
+                try {
+                    const res = await fetch(proxyGen(targetUrl));
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    const meta = data.chart.result[0].meta;
+                    const currentPrice = meta.regularMarketPrice;
+                    const previousClose = meta.chartPreviousClose;
+                    const rawCloses = data.chart.result[0].indicators.quote[0].close;
+                    const klines = rawCloses.filter(c => c !== null && c !== undefined);
+                    
+                    if (currentPrice && previousClose && klines.length > 5) {
+                        const getReturn = (days) => {
+                            if (klines.length < 2) return 0;
+                            const pastIndex = Math.max(0, klines.length - 1 - days);
+                            const pastPrice = klines[pastIndex];
+                            return pastPrice ? ((currentPrice - pastPrice) / pastPrice) * 100 : 0;
+                        };
+                        let dailyProfit = (currentPrice - previousClose) * stock.shares;
+                        const pastIndex30 = Math.max(0, klines.length - 1 - 30);
+                        const pastPrice30 = klines[pastIndex30];
+                        let m1Profit = pastPrice30 ? (currentPrice - pastPrice30) * stock.shares : 0;
+                        if (stock.market === 'US') {
+                            dailyProfit *= appData.settings.usdToTwd;
+                            m1Profit *= appData.settings.usdToTwd;
+                        }
+                        appData.history.push({
+                            symbol: stock.symbol,
+                            d1: ((currentPrice - previousClose) / previousClose) * 100,
+                            d7: getReturn(7),
+                            d30: getReturn(30),
+                            dailyProfitNTD: dailyProfit,
+                            m1ProfitNTD: m1Profit
+                        });
+                        fetchSuccess = true;
+                    }
+                } catch(e) { continue; }
+            }
+            current++;
+            progressBar.style.width = `${(current / total) * 100}%`;
+            statusEl.innerText = `精算分析數據 ${current}/${total}...`;
+        }
+        
+        progressContainer.style.display = 'none';
+        statusEl.innerText = "獲利矩陣運算完成";
+        renderHistory();
+    }
+
+    function setHeroMode(mode, btnEl) {
+        currentHeroMode = mode;
+        document.querySelectorAll('.history-controls .hero-btn').forEach(btn => btn.classList.remove('active-hero'));
+        btnEl.classList.add('active-hero');
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('history-list-container');
+        if(appData.history.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding: 20px; color:var(--text-muted);">無歷史數據或載入失敗</div>';
+            return;
+        }
+        let displayData = [...appData.history];
+        if (currentHeroMode === 'd1Pct') displayData.sort((a, b) => b.d1 - a.d1);
+        else if (currentHeroMode === 'd1Profit') displayData.sort((a, b) => b.dailyProfitNTD - a.dailyProfitNTD);
+        else if (currentHeroMode === 'd30Profit') displayData.sort((a, b) => b.m1ProfitNTD - a.m1ProfitNTD);
+
+        const formatPct = (val) => `<span class="${getColorClass(val)}">${formatPercent(val)}</span>`;
+        const formatProfit = (val) => `<span class="${getColorClass(val)}">${val > 0 ? '+' : ''}${formatMoney(val)}</span>`;
+
+        let html = `
+            <div class="history-grid" style="color:var(--text-muted); border-bottom: 2px solid var(--border-light); padding-bottom: 8px;">
+                <div class="col-name">代號</div><div>1日(%)</div><div>7日(%)</div><div>30日(%)</div>
+                <div style="text-align:right;">月損益</div><div style="text-align:right;">日損益</div>
+            </div>`;
+
+        displayData.forEach(item => {
+            const d1W = currentHeroMode === 'd1Pct' ? 'font-weight:700; font-size:13px;' : '';
+            const d1P = currentHeroMode === 'd1Profit' ? 'font-weight:700; font-size:13px;' : 'font-weight:600;';
+            const d30P = currentHeroMode === 'd30Profit' ? 'font-weight:700; font-size:13px;' : '';
+            html += `
+                <div class="history-grid">
+                    <div class="col-name num">${item.symbol}</div>
+                    <div class="num" style="${d1W}">${formatPct(item.d1)}</div>
+                    <div class="num">${formatPct(item.d7)}</div>
+                    <div class="num">${formatPct(item.d30)}</div>
+                    <div class="num" style="text-align:right; ${d30P}">${formatProfit(item.m1ProfitNTD)}</div>
+                    <div class="num" style="text-align:right; ${d1P}">${formatProfit(item.dailyProfitNTD)}</div>
+                </div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = refreshData;
+</script>
+</body>
+</html>
