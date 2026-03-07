@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>高奢菁英 | 個人資產指揮中心</title>
+    <title>高奢菁英 | 個人資產指揮中心 V11</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -107,7 +107,6 @@
         /* 調整持股模組 */
         #edit-content { display: none; }
 
-        /* 持股列表行 */
         .edit-item { display: flex; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--border-light); }
         .edit-item:last-child { border-bottom: none; }
         .edit-symbol { font-weight: 700; font-size: 13px; width: 54px; color: var(--text-navy); letter-spacing: 0.3px; flex-shrink: 0; }
@@ -117,36 +116,26 @@
         .edit-input { width: 100%; border: 1.5px solid var(--border-light); border-radius: 8px; padding: 7px 9px; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--bg-ivory); color: var(--text-navy); outline: none; transition: 0.2s; }
         .edit-input:focus { border-color: var(--accent-gold); background: #FFF; box-shadow: 0 0 0 3px rgba(197,160,89,0.08); }
 
-        /* ✨ 精煉按鈕系統 */
         .btn-action-group { display: flex; gap: 6px; flex-shrink: 0; }
 
-        /* 儲存鈕：金色細線輪廓，簡約有質感 */
         .btn-save {
             display: flex; align-items: center; justify-content: center;
             width: 34px; height: 34px; border-radius: 10px;
-            background: transparent;
-            border: 1.5px solid var(--accent-gold);
-            color: var(--accent-gold);
-            font-size: 13px; cursor: pointer;
-            transition: var(--transition-smooth);
+            background: transparent; border: 1.5px solid var(--accent-gold);
+            color: var(--accent-gold); font-size: 13px; cursor: pointer; transition: var(--transition-smooth);
         }
         .btn-save:hover { background: var(--accent-gold); color: white; }
         .btn-save:active { transform: scale(0.92); }
 
-        /* 刪除鈕：極簡灰底，hover 才顯紅 */
         .btn-del {
             display: flex; align-items: center; justify-content: center;
             width: 34px; height: 34px; border-radius: 10px;
-            background: transparent;
-            border: 1.5px solid rgba(26,36,54,0.08);
-            color: #B0B8C8;
-            font-size: 12px; cursor: pointer;
-            transition: var(--transition-smooth);
+            background: transparent; border: 1.5px solid rgba(26,36,54,0.08);
+            color: #B0B8C8; font-size: 12px; cursor: pointer; transition: var(--transition-smooth);
         }
         .btn-del:hover { border-color: rgba(217,107,107,0.4); color: var(--up-red); background: rgba(217,107,107,0.05); }
         .btn-del:active { transform: scale(0.92); }
 
-        /* 新增按鈕：深色實心 */
         .btn-add-stock {
             width: 100%; padding: 13px; border-radius: 12px;
             background: var(--text-navy); color: white;
@@ -157,7 +146,6 @@
         }
         .btn-add-stock:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* 現金更新鈕 */
         .btn-cash-update {
             flex-shrink: 0; padding: 8px 16px; border-radius: 10px;
             background: transparent; border: 1.5px solid var(--accent-gold);
@@ -167,39 +155,17 @@
         .btn-cash-update:hover { background: var(--accent-gold); color: white; }
         .btn-cash-update:active { transform: scale(0.96); }
 
-        /* ✨ 變更紀錄面板 */
-        .changelog-panel {
-            background: var(--card-bg); border-radius: 20px;
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-soft);
-            margin-bottom: 20px; overflow: hidden;
-        }
-        .changelog-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light);
-        }
+        /* 變更紀錄面板 */
+        .changelog-panel { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-light); box-shadow: var(--shadow-soft); margin-bottom: 20px; overflow: hidden; }
+        .changelog-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light); }
         .changelog-title { font-family: 'Noto Serif TC', serif; font-size: 16px; font-weight: 600; }
-        .changelog-badge {
-            background: var(--up-red); color: white;
-            font-size: 11px; font-weight: 700;
-            padding: 2px 8px; border-radius: 20px; min-width: 22px; text-align: center;
-        }
+        .changelog-badge { background: var(--up-red); color: white; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; min-width: 22px; text-align: center; }
         .changelog-badge.empty { background: #D0D5DF; }
-        .changelog-empty {
-            padding: 20px; text-align: center;
-            color: var(--text-muted); font-size: 13px;
-        }
-        .changelog-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 11px 20px; border-bottom: 1px solid var(--border-light);
-            font-size: 13px;
-        }
+        .changelog-empty { padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; }
+        .changelog-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 20px; border-bottom: 1px solid var(--border-light); font-size: 13px; }
         .changelog-row:last-child { border-bottom: none; }
         .changelog-left { display: flex; align-items: center; gap: 10px; }
-        .changelog-tag {
-            font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
-            padding: 2px 7px; border-radius: 6px;
-        }
+        .changelog-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; padding: 2px 7px; border-radius: 6px; }
         .tag-edit { background: rgba(197,160,89,0.12); color: var(--accent-gold); }
         .tag-add  { background: rgba(84,155,123,0.12); color: var(--down-green); }
         .tag-del  { background: rgba(217,107,107,0.12); color: var(--up-red); }
@@ -207,30 +173,15 @@
         .changelog-symbol { font-weight: 700; color: var(--text-navy); }
         .changelog-right { font-size: 12px; color: var(--text-muted); text-align: right; line-height: 1.6; }
 
-        /* ✨ 雲端同步狀態列 */
-        .cloud-status {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 12px; color: var(--text-muted);
-            padding: 10px 16px; background: var(--bg-ivory);
-            border-radius: 12px; margin-bottom: 16px;
-            border: 1px solid var(--border-light);
-        }
-        .cloud-status .dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #ccc; flex-shrink: 0;
-        }
+        /* 雲端同步狀態列 */
+        .cloud-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); padding: 10px 16px; background: var(--bg-ivory); border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border-light); }
+        .cloud-status .dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
         .cloud-status.synced .dot { background: var(--down-green); }
         .cloud-status.syncing .dot { background: var(--accent-gold); animation: pulse 1s infinite; }
         .cloud-status.error .dot { background: var(--up-red); }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        .save-to-cloud-btn {
-            width: 100%; padding: 14px; border-radius: 14px;
-            background: linear-gradient(135deg, #1A2436, #2C3A50);
-            color: white; border: none; font-size: 14px; font-weight: 600;
-            cursor: pointer; margin-top: 8px; transition: var(--transition-smooth);
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .save-to-cloud-btn { width: 100%; padding: 14px; border-radius: 14px; background: linear-gradient(135deg, #1A2436, #2C3A50); color: white; border: none; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; gap: 8px; }
         .save-to-cloud-btn:active { transform: scale(0.98); }
         .save-to-cloud-btn:disabled { opacity: 0.5; pointer-events: none; }
 
@@ -324,7 +275,7 @@
             <div class="history-controls">
                 <button class="hero-btn" onclick="setHeroMode('d1Pct', this)">英雄榜(日漲幅)</button>
                 <button class="hero-btn" onclick="setHeroMode('d1Profit', this)">英雄榜(日獲利)</button>
-                <button class="hero-btn" onclick="setHeroMode('d30Profit', this)">英雄榜(月獲利)</button>
+                <button class="hero-btn" onclick="setHeroMode('d22Profit', this)">英雄榜(月獲利)</button>
                 <button class="hero-btn dark-btn active-hero" onclick="setHeroMode('default', this)">預設</button>
             </div>
             <div class="card">
@@ -344,14 +295,11 @@
         </div>
 
         <div id="edit-content">
-
-            <!-- 雲端狀態列 -->
             <div class="cloud-status" id="cloud-status">
                 <div class="dot"></div>
                 <span id="cloud-status-text">尚未連線至 Google Sheets</span>
             </div>
 
-            <!-- 新增持股 -->
             <div class="card">
                 <div class="card-header" style="cursor: default; padding-bottom: 8px;">
                     <div class="card-title-group">
@@ -386,7 +334,6 @@
                 </button>
             </div>
 
-            <!-- 台股部位管理 -->
             <div class="card">
                 <div class="card-header" style="cursor: default; padding-bottom: 8px;">
                     <div class="card-title-group">
@@ -396,7 +343,6 @@
                 <div id="edit-tw-list"></div>
             </div>
 
-            <!-- 美股部位管理 -->
             <div class="card">
                 <div class="card-header" style="cursor: default; padding-bottom: 8px;">
                     <div class="card-title-group">
@@ -406,7 +352,6 @@
                 <div id="edit-us-list"></div>
             </div>
 
-            <!-- 現金水位調整（移至美股下方） -->
             <div class="card">
                 <div class="card-header" style="cursor: default; padding-bottom: 8px;">
                     <div class="card-title-group">
@@ -425,7 +370,6 @@
                 </div>
             </div>
 
-            <!-- ✨ 變更確認紀錄面板 -->
             <div class="changelog-panel" id="changelog-panel">
                 <div class="changelog-header">
                     <span class="changelog-title">本次變更紀錄</span>
@@ -436,12 +380,10 @@
                 </div>
             </div>
 
-            <!-- 雲端儲存按鈕 -->
             <button class="save-to-cloud-btn" id="saveCloudBtn" onclick="saveToCloud()">
                 <i class="fa-solid fa-cloud-arrow-up"></i>
                 儲存全部變更至 Google Sheets
             </button>
-
         </div>
     </main>
 
@@ -451,7 +393,7 @@
 
 <script>
     // ============================================================
-    // 🌟 Google Apps Script API 網址（已設定完成）
+    // 🌟 Google Apps Script API 網址
     // ============================================================
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0e_906blgd80-lI4cHRd3ieSZuROr37uFRxf9TgFfFDulPVWhEY7632AAlR1wSKZvXA/exec';
     // ============================================================
@@ -495,15 +437,11 @@
         txt.innerText = msg;
     }
 
-    // ============================================================
-    // ✨ 核心：從 Google Sheets 讀取資料
-    // ============================================================
     async function loadFromGoogleSheets() {
         setCloudStatus('syncing', '正在從 Google Sheets 讀取資料...');
         try {
             const res = await fetch(GAS_URL);
             const data = await res.json();
-
             if (data.error) throw new Error(data.error);
 
             appData.twStocks = [];
@@ -512,11 +450,8 @@
 
             data.holdings.forEach(h => {
                 const stockObj = {
-                    symbol: h.symbol,
-                    shares: h.shares,
-                    costPrice: h.costPrice,
-                    currentPrice: null,
-                    isError: true
+                    symbol: h.symbol, shares: h.shares, costPrice: h.costPrice,
+                    currentPrice: null, prevClose: null, isError: true
                 };
                 if (h.market === 'TW') appData.twStocks.push(stockObj);
                 else if (h.market === 'US') appData.usStocks.push(stockObj);
@@ -531,9 +466,6 @@
         }
     }
 
-    // ============================================================
-    // ✨ 核心：將變更儲存回 Google Sheets
-    // ============================================================
     async function saveToCloud() {
         const btn = document.getElementById('saveCloudBtn');
         btn.disabled = true;
@@ -549,16 +481,11 @@
         };
 
         try {
-            const res = await fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
+            const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
             const result = await res.json();
-
             if (result.success) {
                 setCloudStatus('synced', '✅ 已成功儲存至 Google Sheets');
                 showToast('☁️ 已同步至 Google Sheets！');
-                // 清空變更紀錄
                 changelog.length = 0;
                 renderChangelog();
             } else {
@@ -651,10 +578,13 @@
                 const results = data.quoteResponse.result;
                 if(results && results.length > 0) {
                     results.forEach(item => {
-                        priceMap[item.symbol] = { price: item.regularMarketPrice, time: item.regularMarketTime * 1000 };
+                        priceMap[item.symbol] = { 
+                            price: item.regularMarketPrice, 
+                            prevClose: item.regularMarketPreviousClose,
+                            time: item.regularMarketTime * 1000 
+                        };
                     });
-                    batchSuccess = true;
-                    break;
+                    batchSuccess = true; break;
                 }
             } catch (err) { continue; }
         }
@@ -670,13 +600,16 @@
                     const data = await response.json();
                     const meta = data.chart.result[0].meta;
                     if (meta && meta.regularMarketPrice) {
-                        priceMap[symbol] = { price: meta.regularMarketPrice, time: meta.regularMarketTime * 1000 };
+                        priceMap[symbol] = { 
+                            price: meta.regularMarketPrice, 
+                            prevClose: meta.chartPreviousClose,
+                            time: meta.regularMarketTime * 1000 
+                        };
                         return;
                     }
                 } catch(e) {}
             }
         };
-
         await Promise.all(symbolsArray.map(sym => fetchIndividual(sym)));
         return priceMap;
     }
@@ -697,24 +630,25 @@
         document.getElementById('exchange-rate-display').innerText = `即時匯率 USD/TWD = ${appData.settings.usdToTwd.toFixed(2)}`;
 
         appData.twStocks.forEach(stock => {
+            const yfSymbol = `${stock.symbol}.TW`;
+            const quote = yahooHybridData[yfSymbol];
+            if (quote && quote.prevClose) stock.prevClose = quote.prevClose;
+
             if (twseDataMap && twseDataMap[stock.symbol]) {
                 stock.currentPrice = Math.round(twseDataMap[stock.symbol] * 100) / 100;
                 stock.isError = false;
-            } else {
-                const yfSymbol = `${stock.symbol}.TW`;
-                const quote = yahooHybridData[yfSymbol];
-                if (quote && quote.price) {
-                    stock.currentPrice = Math.round(quote.price * 100) / 100;
-                    stock.isError = false;
-                    appData.marketTime.tw = Math.max(appData.marketTime.tw || 0, quote.time);
-                } else { stock.isError = true; }
-            }
+            } else if (quote && quote.price) {
+                stock.currentPrice = Math.round(quote.price * 100) / 100;
+                stock.isError = false;
+                appData.marketTime.tw = Math.max(appData.marketTime.tw || 0, quote.time);
+            } else { stock.isError = true; }
         });
 
         appData.usStocks.forEach(stock => {
             const quote = yahooHybridData[stock.symbol];
             if (quote && quote.price) {
                 stock.currentPrice = Math.round(quote.price * 1000) / 1000;
+                stock.prevClose = quote.prevClose;
                 stock.isError = false;
                 appData.marketTime.us = Math.max(appData.marketTime.us || 0, quote.time);
             } else { stock.isError = true; }
@@ -729,22 +663,15 @@
         btn.classList.add('spin');
         document.getElementById('last-update').innerText = "從 Google Sheets 讀取持股，同步全球報價...";
         try {
-            // ✨ 先從 Google Sheets 讀取最新持股
             await loadFromGoogleSheets();
-            // 再抓即時股價
             await fetchPricesAndRender();
-            
             const now = new Date();
             document.getElementById('last-update').innerText = `同步完成：${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            
             isHistoryLoaded = false;
             document.getElementById('history-list-container').innerHTML = '<div style="text-align:center; padding: 30px; color:var(--text-muted); font-size: 13px;">資料已更新，請重新載入歷史數據</div>';
-            
         } catch(e) {
             document.getElementById('last-update').innerText = "資料載入失敗，請檢查網路。";
-        } finally { 
-            btn.classList.remove('spin'); 
-        }
+        } finally { btn.classList.remove('spin'); }
     }
 
     function renderApp() {
@@ -770,8 +697,7 @@
         document.getElementById('us-list').innerHTML = renderList(appData.usStocks, true);
         
         const twROI = twCost === 0 ? 0 : (twNet - twCost) / twCost * 100;
-        const usNetNTD = usNetUSD * exRate;
-        const usCostNTD = usCostUSD * exRate;
+        const usNetNTD = usNetUSD * exRate; const usCostNTD = usCostUSD * exRate;
         const usROI = usCostNTD === 0 ? 0 : (usNetNTD - usCostNTD) / usCostNTD * 100;
         
         appData.totals.stockCost = twCost + usCostNTD;
@@ -781,9 +707,7 @@
 
         updateHeroBanner(currentTab);
 
-        animateValue("tw-net", twNet);
-        animateValue("us-net", usNetNTD);
-        animateValue("cash-total", appData.cash);
+        animateValue("tw-net", twNet); animateValue("us-net", usNetNTD); animateValue("cash-total", appData.cash);
         
         document.getElementById("tw-cost").innerText = formatMoney(twCost);
         document.getElementById("tw-roi").innerText = formatPercent(twROI);
@@ -798,7 +722,6 @@
     }
 
     function toggleCard(id) { document.getElementById(id).classList.toggle('expanded'); }
-    
     function animateValue(id, end) {
         const obj = document.getElementById(id);
         if(!obj) return;
@@ -815,164 +738,100 @@
         window.requestAnimationFrame(step);
     }
 
-    // --- 變更紀錄系統 ---
     const changelog = [];
-
     function addChangelog(type, symbol, detail) {
-        // 同一 symbol + type 只保留最新一筆
         const existing = changelog.findIndex(c => c.symbol === symbol && c.type === type);
         if (existing !== -1) changelog.splice(existing, 1);
         changelog.push({ type, symbol, detail, time: new Date() });
         renderChangelog();
     }
-
     function renderChangelog() {
         const body = document.getElementById('changelog-body');
         const badge = document.getElementById('changelog-badge');
         if (!body) return;
-
         badge.innerText = changelog.length;
         badge.className = changelog.length > 0 ? 'changelog-badge' : 'changelog-badge empty';
-
-        if (changelog.length === 0) {
-            body.innerHTML = '<div class="changelog-empty">尚無任何變更</div>';
-            return;
-        }
-
-        const tagMap = {
-            'edit': ['EDIT', 'tag-edit'],
-            'add':  ['NEW',  'tag-add'],
-            'del':  ['DEL',  'tag-del'],
-            'cash': ['現金', 'tag-cash']
-        };
-
+        if (changelog.length === 0) { body.innerHTML = '<div class="changelog-empty">尚無任何變更</div>'; return; }
+        const tagMap = { 'edit': ['EDIT', 'tag-edit'], 'add': ['NEW', 'tag-add'], 'del': ['DEL', 'tag-del'], 'cash': ['現金', 'tag-cash'] };
         body.innerHTML = changelog.map(c => {
             const [label, cls] = tagMap[c.type] || ['?', ''];
-            return `<div class="changelog-row">
-                <div class="changelog-left">
-                    <span class="changelog-tag ${cls}">${label}</span>
-                    <span class="changelog-symbol">${c.symbol}</span>
-                </div>
-                <div class="changelog-right">${c.detail}</div>
-            </div>`;
+            return `<div class="changelog-row"><div class="changelog-left"><span class="changelog-tag ${cls}">${label}</span><span class="changelog-symbol">${c.symbol}</span></div><div class="changelog-right">${c.detail}</div></div>`;
         }).join('');
     }
 
-    // --- 調整持股模組 ---
     function renderEditView() {
         document.getElementById('edit-cash-input').value = appData.cash;
-
         const renderEditList = (stocks, market) => {
             if(stocks.length === 0) return `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:13px;">目前無部位</div>`;
             return stocks.map((s, index) => `
                 <div class="edit-item">
                     <div class="edit-symbol">${s.symbol}</div>
                     <div class="edit-inputs">
-                        <div class="edit-input-wrapper">
-                            <span class="edit-label">股數</span>
-                            <input type="number" id="edit-${market}-shares-${index}" class="edit-input" value="${s.shares}" step="any">
-                        </div>
-                        <div class="edit-input-wrapper">
-                            <span class="edit-label">成本</span>
-                            <input type="number" id="edit-${market}-cost-${index}" class="edit-input" value="${s.costPrice}" step="any">
-                        </div>
+                        <div class="edit-input-wrapper"><span class="edit-label">股數</span><input type="number" id="edit-${market}-shares-${index}" class="edit-input" value="${s.shares}" step="any"></div>
+                        <div class="edit-input-wrapper"><span class="edit-label">成本</span><input type="number" id="edit-${market}-cost-${index}" class="edit-input" value="${s.costPrice}" step="any"></div>
                     </div>
                     <div class="btn-action-group">
-                        <button class="btn-save" onclick="saveStock('${market}', ${index})" title="儲存">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <button class="btn-del" onclick="deleteStock('${market}', ${index})" title="刪除">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+                        <button class="btn-save" onclick="saveStock('${market}', ${index})" title="儲存"><i class="fa-solid fa-check"></i></button>
+                        <button class="btn-del" onclick="deleteStock('${market}', ${index})" title="刪除"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
             `).join('');
         };
-
         document.getElementById('edit-tw-list').innerHTML = renderEditList(appData.twStocks, 'tw');
         document.getElementById('edit-us-list').innerHTML = renderEditList(appData.usStocks, 'us');
         renderChangelog();
     }
-
     function saveCash() {
         const val = parseFloat(document.getElementById('edit-cash-input').value);
         if(!isNaN(val)) {
-            const old = appData.cash;
-            appData.cash = val;
-            renderApp();
-            addChangelog('cash', 'TWD', `${old.toLocaleString()} → ${val.toLocaleString()}`);
-            showToast('💰 現金已更新');
+            const old = appData.cash; appData.cash = val; renderApp();
+            addChangelog('cash', 'TWD', `${old.toLocaleString()} → ${val.toLocaleString()}`); showToast('💰 現金已更新');
         }
     }
-
     function saveStock(market, index) {
         const sharesInput = parseFloat(document.getElementById(`edit-${market}-shares-${index}`).value);
         const costInput = parseFloat(document.getElementById(`edit-${market}-cost-${index}`).value);
         if(!isNaN(sharesInput) && !isNaN(costInput)) {
             const arr = market === 'tw' ? appData.twStocks : appData.usStocks;
-            const sym = arr[index].symbol;
-            const oldShares = arr[index].shares;
-            const oldCost = arr[index].costPrice;
-            arr[index].shares = sharesInput;
-            arr[index].costPrice = costInput;
-            renderApp();
-            isHistoryLoaded = false;
-            addChangelog('edit', sym,
-                `股數 ${oldShares} → ${sharesInput}<br>成本 ${oldCost} → ${costInput}`);
-            showToast('✓ 已暫存');
+            const sym = arr[index].symbol; const oldShares = arr[index].shares; const oldCost = arr[index].costPrice;
+            arr[index].shares = sharesInput; arr[index].costPrice = costInput;
+            renderApp(); isHistoryLoaded = false;
+            addChangelog('edit', sym, `股數 ${oldShares} → ${sharesInput}<br>成本 ${oldCost} → ${costInput}`); showToast('✓ 已暫存');
         }
     }
-    
     function deleteStock(market, index) {
         if(confirm('確定要刪除這檔持股嗎？')) {
             const arr = market === 'tw' ? appData.twStocks : appData.usStocks;
-            const sym = arr[index].symbol;
-            arr.splice(index, 1);
-            renderEditView();
-            renderApp();
-            isHistoryLoaded = false;
-            addChangelog('del', sym, '已從投資組合移除');
-            showToast('已移除 ' + sym);
+            const sym = arr[index].symbol; arr.splice(index, 1);
+            renderEditView(); renderApp(); isHistoryLoaded = false;
+            addChangelog('del', sym, '已從投資組合移除'); showToast('已移除 ' + sym);
         }
     }
-
     async function addNewStock() {
         const market = document.getElementById('add-market').value;
         const symbol = document.getElementById('add-symbol').value.trim().toUpperCase();
         const shares = parseFloat(document.getElementById('add-shares').value);
         const cost = parseFloat(document.getElementById('add-cost').value);
-
         if(!symbol || isNaN(shares) || isNaN(cost)) return alert('請填寫完整的代號、股數與成本！');
 
-        const stockObj = { symbol, shares, costPrice: cost, currentPrice: null, isError: true };
-        if(market === 'TW') {
-            stockObj.symbol = symbol.replace(/\.TW$/i, '').replace(/\.TWO$/i, '');
-            appData.twStocks.push(stockObj);
-        } else {
-            appData.usStocks.push(stockObj);
-        }
+        const stockObj = { symbol, shares, costPrice: cost, currentPrice: null, prevClose: null, isError: true };
+        if(market === 'TW') { stockObj.symbol = symbol.replace(/\.TW$/i, '').replace(/\.TWO$/i, ''); appData.twStocks.push(stockObj); } 
+        else { appData.usStocks.push(stockObj); }
 
-        document.getElementById('add-symbol').value = '';
-        document.getElementById('add-shares').value = '';
-        document.getElementById('add-cost').value = '';
-
-        addChangelog('add', stockObj.symbol, `${market} · ${shares} 股 · 成本 ${cost}`);
-        showToast(`已加入 ${stockObj.symbol}，正在同步報價...`);
-        const btn = document.getElementById('syncBtn');
-        btn.classList.add('spin');
-        await fetchPricesAndRender();
-        btn.classList.remove('spin');
+        document.getElementById('add-symbol').value = ''; document.getElementById('add-shares').value = ''; document.getElementById('add-cost').value = '';
+        addChangelog('add', stockObj.symbol, `${market} · ${shares} 股 · 成本 ${cost}`); showToast(`已加入 ${stockObj.symbol}，正在同步報價...`);
+        const btn = document.getElementById('syncBtn'); btn.classList.add('spin'); await fetchPricesAndRender(); btn.classList.remove('spin');
         isHistoryLoaded = false;
     }
 
-    // --- 歷史績效引擎 ---
+    // 🚀 V11_google版：絕對真實市場價格版 (無視除權息與分割)
     async function loadHistoryData() {
         isHistoryLoaded = true;
         const statusEl = document.getElementById('history-status');
         const progressContainer = document.getElementById('history-progress-container');
         const progressBar = document.getElementById('history-progress');
         
-        statusEl.innerText = "啟動華爾街多重路由，精算獲利矩陣...";
+        statusEl.innerText = "啟動華爾街多重路由，抓取真實市場報價...";
         progressContainer.style.display = 'block';
         appData.history = [];
         
@@ -991,10 +850,13 @@
         ];
 
         for (let stock of allStocks) {
-            await sleep(600);
+            await sleep(600); 
             const yfSymbol = stock.market === 'TW' ? `${stock.symbol}.TW` : stock.symbol;
             const ts = new Date().getTime();
+            
+            // 💎 極簡網址：移除 events=div，只要最純粹的歷史 K 線
             const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yfSymbol}?interval=1d&range=6mo&nocache=${ts}`;
+            
             let fetchSuccess = false;
 
             for (let proxyGen of proxies) {
@@ -1003,46 +865,69 @@
                     const res = await fetch(proxyGen(targetUrl));
                     if (!res.ok) continue;
                     const data = await res.json();
-                    const meta = data.chart.result[0].meta;
-                    const currentPrice = meta.regularMarketPrice;
-                    const previousClose = meta.chartPreviousClose;
-                    const rawCloses = data.chart.result[0].indicators.quote[0].close;
-                    const klines = rawCloses.filter(c => c !== null && c !== undefined);
                     
-                    if (currentPrice && previousClose && klines.length > 5) {
-                        const getReturn = (days) => {
-                            if (klines.length < 2) return 0;
-                            const pastIndex = Math.max(0, klines.length - 1 - days);
+                    const currentPrice = stock.currentPrice;
+                    const previousClose = stock.prevClose;
+                    
+                    // 💎 唯一真理：只抓取「原始未還原收盤價 (close)」，無視 adjclose
+                    const rawCloses = data.chart.result[0].indicators.quote[0].close;
+                    const klines = rawCloses.filter(c => c !== null && c !== undefined); 
+                    
+                    if (currentPrice && klines.length > 5) {
+                        
+                        // 計算純粹的市場價差
+                        const getRawPerformance = (tradingDays) => {
+                            if (klines.length < 2) return { pct: 0, profit: 0 };
+                            
+                            const pastIndex = Math.max(0, klines.length - 1 - tradingDays);
                             const pastPrice = klines[pastIndex];
-                            return pastPrice ? ((currentPrice - pastPrice) / pastPrice) * 100 : 0;
+                            
+                            if (!pastPrice) return { pct: 0, profit: 0 };
+
+                            // 完全不管配息或分割，就是單純的：(現價 - 過去價)
+                            let profit = (currentPrice - pastPrice) * stock.shares;
+                            let pct = ((currentPrice - pastPrice) / pastPrice) * 100;
+
+                            return { pct, profit };
                         };
-                        let dailyProfit = (currentPrice - previousClose) * stock.shares;
-                        const pastIndex30 = Math.max(0, klines.length - 1 - 30);
-                        const pastPrice30 = klines[pastIndex30];
-                        let m1Profit = pastPrice30 ? (currentPrice - pastPrice30) * stock.shares : 0;
+
+                        // 取得 5 個交易日與 22 個交易日的絕對真實績效
+                        const d5Data = getRawPerformance(5);
+                        const d22Data = getRawPerformance(22);
+
+                        // 1日損益維持使用首頁抓到的精準昨收
+                        let dailyProfit = 0;
+                        let d1Return = 0;
+                        if (previousClose) {
+                            dailyProfit = (currentPrice - previousClose) * stock.shares;
+                            d1Return = ((currentPrice - previousClose) / previousClose) * 100;
+                        }
+
                         if (stock.market === 'US') {
                             dailyProfit *= appData.settings.usdToTwd;
-                            m1Profit *= appData.settings.usdToTwd;
+                            d22Data.profit *= appData.settings.usdToTwd;
                         }
+                        
                         appData.history.push({
                             symbol: stock.symbol,
-                            d1: ((currentPrice - previousClose) / previousClose) * 100,
-                            d7: getReturn(7),
-                            d30: getReturn(30),
+                            d1: d1Return,
+                            d5: d5Data.pct,
+                            d22: d22Data.pct,
                             dailyProfitNTD: dailyProfit,
-                            m1ProfitNTD: m1Profit
+                            m1ProfitNTD: d22Data.profit 
                         });
-                        fetchSuccess = true;
+                        fetchSuccess = true; 
                     }
                 } catch(e) { continue; }
             }
+            
             current++;
             progressBar.style.width = `${(current / total) * 100}%`;
-            statusEl.innerText = `精算分析數據 ${current}/${total}...`;
+            statusEl.innerText = `計算市場真實波動 ${current}/${total}...`;
         }
         
         progressContainer.style.display = 'none';
-        statusEl.innerText = "獲利矩陣運算完成";
+        statusEl.innerText = "波動矩陣運算完成";
         renderHistory();
     }
 
@@ -1062,28 +947,46 @@
         let displayData = [...appData.history];
         if (currentHeroMode === 'd1Pct') displayData.sort((a, b) => b.d1 - a.d1);
         else if (currentHeroMode === 'd1Profit') displayData.sort((a, b) => b.dailyProfitNTD - a.dailyProfitNTD);
-        else if (currentHeroMode === 'd30Profit') displayData.sort((a, b) => b.m1ProfitNTD - a.m1ProfitNTD);
+        else if (currentHeroMode === 'd22Profit') displayData.sort((a, b) => b.m1ProfitNTD - a.m1ProfitNTD);
 
         const formatPct = (val) => `<span class="${getColorClass(val)}">${formatPercent(val)}</span>`;
         const formatProfit = (val) => `<span class="${getColorClass(val)}">${val > 0 ? '+' : ''}${formatMoney(val)}</span>`;
 
+        // ✅ 計算月損益與日損益的總合計（所有個股加總，與排序無關）
+        const totalM1  = appData.history.reduce((sum, item) => sum + item.m1ProfitNTD,    0);
+        const totalDay = appData.history.reduce((sum, item) => sum + item.dailyProfitNTD, 0);
+        const m1Color  = totalM1  > 0 ? 'color:var(--up-red)' : totalM1  < 0 ? 'color:var(--down-green)' : 'color:var(--text-navy)';
+        const dayColor = totalDay > 0 ? 'color:var(--up-red)' : totalDay < 0 ? 'color:var(--down-green)' : 'color:var(--text-navy)';
+
         let html = `
-            <div class="history-grid" style="color:var(--text-muted); border-bottom: 2px solid var(--border-light); padding-bottom: 8px;">
-                <div class="col-name">代號</div><div>1日(%)</div><div>7日(%)</div><div>30日(%)</div>
-                <div style="text-align:right;">月損益</div><div style="text-align:right;">日損益</div>
+            <div class="history-grid" style="color:var(--text-muted); border-bottom: 2px solid var(--border-light); padding-bottom: 8px; align-items: flex-end;">
+                <div class="col-name">代號</div><div>1日(%)</div><div>5日(%)</div><div>22日(%)</div>
+                <div style="text-align:right; line-height:1.4;">
+                    月損益
+                    <div class="num" style="font-size:12px; font-weight:700; margin-top:4px; ${m1Color}">
+                        ${totalM1 > 0 ? '+' : ''}${formatMoney(totalM1)}
+                    </div>
+                </div>
+                <div style="text-align:right; line-height:1.4;">
+                    日損益
+                    <div class="num" style="font-size:12px; font-weight:700; margin-top:4px; ${dayColor}">
+                        ${totalDay > 0 ? '+' : ''}${formatMoney(totalDay)}
+                    </div>
+                </div>
             </div>`;
 
         displayData.forEach(item => {
             const d1W = currentHeroMode === 'd1Pct' ? 'font-weight:700; font-size:13px;' : '';
             const d1P = currentHeroMode === 'd1Profit' ? 'font-weight:700; font-size:13px;' : 'font-weight:600;';
-            const d30P = currentHeroMode === 'd30Profit' ? 'font-weight:700; font-size:13px;' : '';
+            const d22P = currentHeroMode === 'd22Profit' ? 'font-weight:700; font-size:13px;' : '';
+            
             html += `
                 <div class="history-grid">
                     <div class="col-name num">${item.symbol}</div>
                     <div class="num" style="${d1W}">${formatPct(item.d1)}</div>
-                    <div class="num">${formatPct(item.d7)}</div>
-                    <div class="num">${formatPct(item.d30)}</div>
-                    <div class="num" style="text-align:right; ${d30P}">${formatProfit(item.m1ProfitNTD)}</div>
+                    <div class="num">${formatPct(item.d5)}</div>
+                    <div class="num">${formatPct(item.d22)}</div>
+                    <div class="num" style="text-align:right; ${d22P}">${formatProfit(item.m1ProfitNTD)}</div>
                     <div class="num" style="text-align:right; ${d1P}">${formatProfit(item.dailyProfitNTD)}</div>
                 </div>`;
         });
