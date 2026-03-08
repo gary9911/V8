@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>高奢菁英 | 個人資產指揮中心 V11</title>
+    <title>高奢菁英 | 個人資產指揮中心 V11_總計版</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -273,9 +273,9 @@
 
         <div id="history-content">
             <div class="history-controls">
-                <button class="hero-btn" onclick="setHeroMode('d1Pct', this)">英雄榜(日漲幅)</button>
-                <button class="hero-btn" onclick="setHeroMode('d1Profit', this)">英雄榜(日獲利)</button>
-                <button class="hero-btn" onclick="setHeroMode('d22Profit', this)">英雄榜(月獲利)</button>
+                <button class="hero-btn" onclick="setHeroMode('d1Pct', this)">👑 日漲幅</button>
+                <button class="hero-btn" onclick="setHeroMode('d1Profit', this)">👑 日獲利</button>
+                <button class="hero-btn" onclick="setHeroMode('d22Profit', this)">👑 月獲利</button>
                 <button class="hero-btn dark-btn active-hero" onclick="setHeroMode('default', this)">預設</button>
             </div>
             <div class="card">
@@ -824,7 +824,7 @@
         isHistoryLoaded = false;
     }
 
-    // 🚀 V11_google版：絕對真實市場價格版 (無視除權息與分割)
+    // 🚀 絕對真實市場價格版 (無視除權息與分割)
     async function loadHistoryData() {
         isHistoryLoaded = true;
         const statusEl = document.getElementById('history-status');
@@ -854,7 +854,6 @@
             const yfSymbol = stock.market === 'TW' ? `${stock.symbol}.TW` : stock.symbol;
             const ts = new Date().getTime();
             
-            // 💎 極簡網址：移除 events=div，只要最純粹的歷史 K 線
             const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yfSymbol}?interval=1d&range=6mo&nocache=${ts}`;
             
             let fetchSuccess = false;
@@ -869,33 +868,24 @@
                     const currentPrice = stock.currentPrice;
                     const previousClose = stock.prevClose;
                     
-                    // 💎 唯一真理：只抓取「原始未還原收盤價 (close)」，無視 adjclose
                     const rawCloses = data.chart.result[0].indicators.quote[0].close;
                     const klines = rawCloses.filter(c => c !== null && c !== undefined); 
                     
                     if (currentPrice && klines.length > 5) {
                         
-                        // 計算純粹的市場價差
                         const getRawPerformance = (tradingDays) => {
                             if (klines.length < 2) return { pct: 0, profit: 0 };
-                            
                             const pastIndex = Math.max(0, klines.length - 1 - tradingDays);
                             const pastPrice = klines[pastIndex];
-                            
                             if (!pastPrice) return { pct: 0, profit: 0 };
-
-                            // 完全不管配息或分割，就是單純的：(現價 - 過去價)
                             let profit = (currentPrice - pastPrice) * stock.shares;
                             let pct = ((currentPrice - pastPrice) / pastPrice) * 100;
-
                             return { pct, profit };
                         };
 
-                        // 取得 5 個交易日與 22 個交易日的絕對真實績效
                         const d5Data = getRawPerformance(5);
                         const d22Data = getRawPerformance(22);
 
-                        // 1日損益維持使用首頁抓到的精準昨收
                         let dailyProfit = 0;
                         let d1Return = 0;
                         if (previousClose) {
@@ -952,28 +942,29 @@
         const formatPct = (val) => `<span class="${getColorClass(val)}">${formatPercent(val)}</span>`;
         const formatProfit = (val) => `<span class="${getColorClass(val)}">${val > 0 ? '+' : ''}${formatMoney(val)}</span>`;
 
-        // ✅ 計算月損益與日損益的總合計（所有個股加總，與排序無關）
-        const totalM1  = appData.history.reduce((sum, item) => sum + item.m1ProfitNTD,    0);
-        const totalDay = appData.history.reduce((sum, item) => sum + item.dailyProfitNTD, 0);
-        const m1Color  = totalM1  > 0 ? 'color:var(--up-red)' : totalM1  < 0 ? 'color:var(--down-green)' : 'color:var(--text-navy)';
-        const dayColor = totalDay > 0 ? 'color:var(--up-red)' : totalDay < 0 ? 'color:var(--down-green)' : 'color:var(--text-navy)';
+        // 🌟 計算總計數值
+        let totalDailyProfit = 0;
+        let totalMonthlyProfit = 0;
+        appData.history.forEach(item => {
+            totalDailyProfit += (item.dailyProfitNTD || 0);
+            totalMonthlyProfit += (item.m1ProfitNTD || 0);
+        });
 
         let html = `
-            <div class="history-grid" style="color:var(--text-muted); border-bottom: 2px solid var(--border-light); padding-bottom: 8px; align-items: flex-end;">
+            <div class="history-grid" style="color:var(--text-muted); border-bottom: 2px solid var(--border-light); padding-bottom: 8px;">
                 <div class="col-name">代號</div><div>1日(%)</div><div>5日(%)</div><div>22日(%)</div>
-                <div style="text-align:right; line-height:1.4;">
-                    月損益
-                    <div class="num" style="font-size:12px; font-weight:700; margin-top:4px; ${m1Color}">
-                        ${totalM1 > 0 ? '+' : ''}${formatMoney(totalM1)}
-                    </div>
-                </div>
-                <div style="text-align:right; line-height:1.4;">
-                    日損益
-                    <div class="num" style="font-size:12px; font-weight:700; margin-top:4px; ${dayColor}">
-                        ${totalDay > 0 ? '+' : ''}${formatMoney(totalDay)}
-                    </div>
-                </div>
-            </div>`;
+                <div style="text-align:right;">月損益</div><div style="text-align:right;">日損益</div>
+            </div>
+            
+            <div class="history-grid" style="background: rgba(197, 160, 89, 0.08); border-radius: 6px; padding: 10px 8px; margin: 8px 0; border-bottom: none;">
+                <div class="col-name" style="color:var(--accent-gold); font-size: 13px;">組合總計</div>
+                <div style="color:var(--text-muted);">-</div>
+                <div style="color:var(--text-muted);">-</div>
+                <div style="color:var(--text-muted);">-</div>
+                <div class="num right" style="text-align:right; font-weight:700; font-size:13px;">${formatProfit(totalMonthlyProfit)}</div>
+                <div class="num right" style="text-align:right; font-weight:700; font-size:13px;">${formatProfit(totalDailyProfit)}</div>
+            </div>
+        `;
 
         displayData.forEach(item => {
             const d1W = currentHeroMode === 'd1Pct' ? 'font-weight:700; font-size:13px;' : '';
