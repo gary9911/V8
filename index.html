@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>高奢菁英 | 總資產指揮中心 V15.2_完美版</title>
+    <title>高奢菁英 | 總資產指揮中心 V16.1</title>
     
     <meta name="theme-color" content="#FDFCF8">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -97,10 +97,9 @@
         .btn-cash-update { padding: 8px 16px; border-radius: 10px; background: transparent; border: 1.5px solid var(--accent-gold); color: var(--accent-gold); font-size: 12px; font-weight: 600; cursor: pointer; }
         .btn-cash-update:hover { background: var(--accent-gold); color: white; }
         
-        /* ✨ 還原：V15 版高奢「變更紀錄」面板專屬樣式 */
         .changelog-panel { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-light); box-shadow: var(--shadow-soft); margin-bottom: 20px; overflow: hidden; }
-        .changelog-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light); }
-        .changelog-title { font-family: 'Noto Serif TC', serif; font-size: 16px; font-weight: 600; }
+        .changelog-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--border-light); font-weight: 600; }
+        .changelog-title { font-family: 'Noto Serif TC', serif; font-size: 16px; }
         .changelog-badge { background: var(--up-red); color: white; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; min-width: 22px; text-align: center; }
         .changelog-badge.empty { background: #D0D5DF; }
         .changelog-empty { padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px; }
@@ -181,29 +180,29 @@
         </div>
 
         <div id="tracking-content" class="hide">
-            <div class="card">
+            <div class="card" style="margin-top: 10px;">
                 <div class="card-header" style="cursor: default; padding-bottom: 8px; align-items: center;">
-                    <div class="card-title-group"><h2 class="card-title">總資產趨勢</h2><span class="card-subtitle">歷史總淨值變化</span></div>
+                    <div class="card-title-group"><h2 class="card-title">總資產趨勢</h2><span class="card-subtitle">對應當下總資產淨值</span></div>
                     <button class="hero-btn active-hero" id="saveNwBtn" style="margin:0; padding:8px 14px;" onclick="saveCurrentNetWorth()">💾 紀錄現值</button>
                 </div>
                 <div class="chart-container" id="nw-box"><canvas id="netWorthChart"></canvas></div>
             </div>
+
             <div class="mid-hero-section">
                 <div class="hero-title" style="color: var(--down-green);">股票資產總淨值</div>
                 <div class="hero-amount" style="font-size: 38px; margin-bottom: 8px;"><span class="currency" style="font-size: 20px;">NT$</span><span class="num" id="tracking-stock-total">0</span></div>
-                <div style="font-size: 11px; color: var(--text-muted);">當下結算：總淨值 － 當前現金</div>
             </div>
             <div class="card">
-                <div class="card-header" style="cursor: default; padding-bottom: 8px;"><div class="card-title-group"><h2 class="card-title">股票資產趨勢</h2><span class="card-subtitle">歷史軌跡 (總淨值 － 現金)</span></div></div>
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;"><div class="card-title-group"><h2 class="card-title">股票資產趨勢</h2><span class="card-subtitle">對應當下股票總淨值</span></div></div>
                 <div class="chart-container" id="st-box"><canvas id="stockNetChart"></canvas></div>
             </div>
+
             <div class="mid-hero-section">
                 <div class="hero-title" style="color: var(--text-navy);">現金資產淨值</div>
                 <div class="hero-amount" style="font-size: 38px; margin-bottom: 8px;"><span class="currency" style="font-size: 20px;">NT$</span><span class="num" id="tracking-cash-total">0</span></div>
-                <div style="font-size: 11px; color: var(--text-muted);">目前持有現金水位</div>
             </div>
             <div class="card">
-                <div class="card-header" style="cursor: default; padding-bottom: 8px;"><div class="card-title-group"><h2 class="card-title">現金水位趨勢</h2><span class="card-subtitle">歷史現金變化軌跡</span></div></div>
+                <div class="card-header" style="cursor: default; padding-bottom: 8px;"><div class="card-title-group"><h2 class="card-title">現金水位趨勢</h2><span class="card-subtitle">對應試算表 Cash 欄位</span></div></div>
                 <div class="chart-container" id="cs-box"><canvas id="cashNetChart"></canvas></div>
             </div>
         </div>
@@ -244,16 +243,10 @@
             </div>
             
             <div class="changelog-panel" id="changelog-panel">
-                <div class="changelog-header">
-                    <span class="changelog-title">本次變更紀錄</span>
-                    <span class="changelog-badge empty" id="changelog-badge">0</span>
-                </div>
-                <div id="changelog-body">
-                    <div class="changelog-empty">尚無任何變更</div>
-                </div>
+                <div class="changelog-header"><span class="changelog-title">變更紀錄</span><span class="changelog-badge empty" id="changelog-badge">0</span></div>
+                <div id="changelog-body"><div class="changelog-empty">無變更</div></div>
             </div>
-            
-            <button class="save-to-cloud-btn" id="saveCloudBtn" onclick="saveToCloud()"><i class="fa-solid fa-cloud-arrow-up"></i> 儲存全部變更至 Google Sheets</button>
+            <button class="save-to-cloud-btn" id="saveCloudBtn" onclick="saveToCloud()"><i class="fa-solid fa-cloud-arrow-up"></i> 儲存至 Google Sheets</button>
         </div>
     </main>
 
@@ -263,18 +256,16 @@
 
 <script>
     // ============================================================
-    // 🌟 Google Apps Script API (請換成您的網址)
+    // 🌟 請務必貼上您最新的 Google Apps Script 網址
     // ============================================================
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0e_906blgd80-lI4cHRd3ieSZuROr37uFRxf9TgFfFDulPVWhEY7632AAlR1wSKZvXA/exec';
+    const GAS_URL = 'https://script.google.com/macros/library/d/1h5lQIx35MpvhHcxOLlHsiPiEpZhZVkeNWyJdkfNJB1tZGag0xPC3ULel/7';
     
-    // 全域狀態與快捷 DOM 選擇器
     const $ = id => document.getElementById(id);
     const appData = { cash: 0, settings: { usdToTwd: 31.5 }, twStocks: [], usStocks: [], history: [], netWorthHistory: [], totals: { grandNet:0, grandCost:0, stockNet:0, stockCost:0, twNet:0, usNet:0 }, marketTime: { tw:null, us:null } };
     let twseDataMap = null, isHistoryLoaded = false, isDataInitialized = false, currentHeroMode = 'default', currentTab = 'dashboard';
     let chartInst = { allocation: null, nw: null, stock: null, cash: null };
     const changelog = [];
 
-    // 工具函式
     const fmtM = n => n.toLocaleString('en-US', { maximumFractionDigits: 0 });
     const fmtD = n => n.toLocaleString('en-US', { maximumFractionDigits: 3 });
     const fmtP = n => (n > 0 ? '+' : '') + n.toFixed(2) + '%';
@@ -287,7 +278,6 @@
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     };
 
-    // 核心邏輯
     async function loadFromGoogleSheets() {
         setCloudStatus('syncing', '讀取資料中...');
         try {
@@ -380,7 +370,6 @@
         } catch(e) { $('last-update').innerText = "載入失敗"; } finally { $('syncBtn').classList.remove('spin'); }
     }
 
-    // 視圖渲染
     const renderStockList = (stocks, isUS) => stocks.map(s => {
         const c = s.costPrice * s.shares, net = (s.isError?0:s.currentPrice) * s.shares, p = net - c, ex = isUS ? appData.settings.usdToTwd : 1;
         appData.totals[isUS?'usNet':'twNet'] += (net * ex); return `<div class="list-item"><div class="item-col"><span class="item-main">${s.symbol}</span><span class="item-sub">${fmtD(s.shares)} 股</span></div><div class="item-col" style="text-align:center;"><span class="item-main ${s.isError?'color-down':''}">${s.isError?'⚠️阻擋':(isUS?'$':'')+s.currentPrice.toFixed(2)}</span><span class="item-sub">現價</span></div><div class="item-col right"><span class="item-main">${s.isError?'--':'NT$ '+fmtM(net*ex)}</span><span class="item-sub ${clr(p)}">${s.isError?'--':'NT$ '+fmtM(p*ex)+' ('+fmtP(c===0?0:(p/c)*100)+')'}</span></div></div>`;
@@ -453,30 +442,42 @@
         ['netWorthChart','stockNetChart','cashNetChart'].forEach(id => { if($(id)?.style.display==='none') $(id).parentNode.innerHTML = `<canvas id="${id}"></canvas>`; });
         
         const lbls = hist.map(i => { let d = new Date(i.date); return isNaN(d.getTime()) ? i.date : `${d.getFullYear().toString().slice(-2)}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; });
-        chartInst.nw = drawLineChart(chartInst.nw, 'netWorthChart', lbls, hist.map(i=>i.netWorth), '總資產', '#C5A059', 'rgba(197,160,89,0.1)');
-        chartInst.stock = drawLineChart(chartInst.stock, 'stockNetChart', lbls, hist.map(i=>i.netWorth-(i.cash||0)), '股票資產', '#549B7B', 'rgba(84,155,123,0.1)');
-        chartInst.cash = drawLineChart(chartInst.cash, 'cashNetChart', lbls, hist.map(i=>i.cash||0), '現金', '#3A4A63', 'rgba(58,74,99,0.1)');
+        chartInst.nw = drawLineChart(chartInst.nw, 'netWorthChart', lbls, hist.map(i=>i.grandNet), '總資產', '#C5A059', 'rgba(197,160,89,0.1)');
+        chartInst.stock = drawLineChart(chartInst.stock, 'stockNetChart', lbls, hist.map(i=>i.stockNet), '股票資產', '#549B7B', 'rgba(84,155,123,0.1)');
+        chartInst.cash = drawLineChart(chartInst.cash, 'cashNetChart', lbls, hist.map(i=>i.cash), '現金', '#3A4A63', 'rgba(58,74,99,0.1)');
     }
 
+    // ✨ 核心修正：精準發送四個數值
     async function saveCurrentNetWorth() {
         if(appData.totals.grandNet <= 0) return showToast('⚠️ 總資產異常');
         $('saveNwBtn').disabled = true; $('saveNwBtn').innerText = '儲存中...';
         const d = new Date(), dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        const nr = { date: dateStr, netWorth: appData.totals.grandNet, cash: appData.cash };
+        
+        const nr = { 
+            date: dateStr, 
+            grandNet: appData.totals.grandNet, 
+            stockNet: appData.totals.stockNet, 
+            cash: appData.cash 
+        };
         appData.netWorthHistory.push(nr); renderTrackingChart();
-        try { const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({newNetWorth: nr}) })).json(); if(!res.success) throw new Error(res.error); showToast('📈 存檔成功！'); } 
-        catch(e) { showToast('❌ 存檔失敗'); appData.netWorthHistory.pop(); renderTrackingChart(); } 
-        // ✨ 按鈕文字恢復為「紀錄現值」
+        try { 
+            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({newNetWorth: nr}) })).json(); 
+            if(!res.success) throw new Error(res.error); 
+            showToast('📈 存檔成功！'); 
+        } 
+        catch(e) { 
+            showToast('❌ 存檔失敗'); 
+            appData.netWorthHistory.pop(); 
+            renderTrackingChart(); 
+        } 
         finally { $('saveNwBtn').disabled = false; $('saveNwBtn').innerText = '💾 紀錄現值'; }
     }
 
-    // 編輯區邏輯
     function addChangelog(type, symbol, detail) {
         const ext = changelog.findIndex(c => c.symbol === symbol && c.type === type); if (ext !== -1) changelog.splice(ext, 1);
         changelog.push({ type, symbol, detail, time: new Date() }); renderChangelog();
     }
     
-    // ✨ 還原高奢變更紀錄的 HTML 渲染結構
     function renderChangelog() {
         $('changelog-badge').innerText = changelog.length; $('changelog-badge').className = changelog.length ? 'changelog-badge' : 'changelog-badge empty';
         if (!changelog.length) return $('changelog-body').innerHTML = '<div class="changelog-empty">尚無任何變更</div>';
@@ -509,7 +510,6 @@
         $('syncBtn').classList.add('spin'); await fetchPricesAndRender(); $('syncBtn').classList.remove('spin'); isHistoryLoaded=false;
     }
 
-    // 歷史引擎
     async function loadHistoryData() {
         isHistoryLoaded = true; $('history-progress-container').style.display = 'block'; appData.history = [];
         const stocks = [...appData.twStocks.map(s => ({...s, m:'TW'})), ...appData.usStocks.map(s => ({...s, m:'US'}))];
