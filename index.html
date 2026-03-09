@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>高奢菁英 | 總資產指揮中心 V16.1</title>
+    <title>高奢菁英 | 總資產指揮中心 V16.2</title>
     
     <meta name="theme-color" content="#FDFCF8">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -256,9 +256,9 @@
 
 <script>
     // ============================================================
-    // 🌟 請務必貼上您最新的 Google Apps Script 網址
+    // 🌟 請換成您的 Google Apps Script 網址
     // ============================================================
-    const GAS_URL = 'https://script.google.com/macros/library/d/1h5lQIx35MpvhHcxOLlHsiPiEpZhZVkeNWyJdkfNJB1tZGag0xPC3ULel/7';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwImwawawdyp-JE75tjMpSQDW6pYM0SNWQEsC7DeFZIxxxKyyjhmUtdjQdd81MLCTy0sw/exec';
     
     const $ = id => document.getElementById(id);
     const appData = { cash: 0, settings: { usdToTwd: 31.5 }, twStocks: [], usStocks: [], history: [], netWorthHistory: [], totals: { grandNet:0, grandCost:0, stockNet:0, stockCost:0, twNet:0, usNet:0 }, marketTime: { tw:null, us:null } };
@@ -436,18 +436,25 @@
     }
 
     function renderTrackingChart() {
-        animateVal("tracking-stock-total", appData.totals.stockNet); animateVal("tracking-cash-total", appData.cash);
+        animateVal("tracking-stock-total", appData.totals.stockNet); 
+        animateVal("tracking-cash-total", appData.cash);
+        
         const hist = appData.netWorthHistory;
         if (!hist.length) { ['nw-box','st-box','cs-box'].forEach(id => $(id).innerHTML = '<div style="text-align:center; padding:50px 0; color:var(--text-muted); font-size:13px;">無紀錄</div><canvas style="display:none;"></canvas>'); return; }
         ['netWorthChart','stockNetChart','cashNetChart'].forEach(id => { if($(id)?.style.display==='none') $(id).parentNode.innerHTML = `<canvas id="${id}"></canvas>`; });
         
         const lbls = hist.map(i => { let d = new Date(i.date); return isNaN(d.getTime()) ? i.date : `${d.getFullYear().toString().slice(-2)}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; });
-        chartInst.nw = drawLineChart(chartInst.nw, 'netWorthChart', lbls, hist.map(i=>i.grandNet), '總資產', '#C5A059', 'rgba(197,160,89,0.1)');
-        chartInst.stock = drawLineChart(chartInst.stock, 'stockNetChart', lbls, hist.map(i=>i.stockNet), '股票資產', '#549B7B', 'rgba(84,155,123,0.1)');
-        chartInst.cash = drawLineChart(chartInst.cash, 'cashNetChart', lbls, hist.map(i=>i.cash), '現金', '#3A4A63', 'rgba(58,74,99,0.1)');
+        
+        const nwData = hist.map(i => i.grandNet);
+        const stockData = hist.map(i => i.stockNet || (i.grandNet - (i.cash || 0)));
+        const cashData = hist.map(i => i.cash);
+
+        chartInst.nw = drawLineChart(chartInst.nw, 'netWorthChart', lbls, nwData, '總資產', '#C5A059', 'rgba(197,160,89,0.1)');
+        chartInst.stock = drawLineChart(chartInst.stock, 'stockNetChart', lbls, stockData, '股票資產', '#549B7B', 'rgba(84,155,123,0.1)');
+        chartInst.cash = drawLineChart(chartInst.cash, 'cashNetChart', lbls, cashData, '現金', '#3A4A63', 'rgba(58,74,99,0.1)');
     }
 
-    // ✨ 核心修正：精準發送四個數值
+    // ✨ 核心修正：精準發送四個數值並強制轉換格式
     async function saveCurrentNetWorth() {
         if(appData.totals.grandNet <= 0) return showToast('⚠️ 總資產異常');
         $('saveNwBtn').disabled = true; $('saveNwBtn').innerText = '儲存中...';
@@ -455,9 +462,9 @@
         
         const nr = { 
             date: dateStr, 
-            grandNet: appData.totals.grandNet, 
-            stockNet: appData.totals.stockNet, 
-            cash: appData.cash 
+            grandNet: Number(appData.totals.grandNet) || 0, 
+            stockNet: Number(appData.totals.stockNet) || 0, 
+            cash: Number(appData.cash) || 0 
         };
         appData.netWorthHistory.push(nr); renderTrackingChart();
         try { 
