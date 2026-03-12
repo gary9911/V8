@@ -316,7 +316,11 @@
     async function fetchHybridYahooQuotes(symbolsArray) {
         if(symbolsArray.length === 0) return {};
         const priceMap = {}; let missing = [...symbolsArray];
-        const proxies = [ url => `https://corsproxy.io/?${encodeURIComponent(url)}`, url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}` ];
+        // 🌟 大師級架構：專屬 Cloudflare 中繼站
+const WORKER_URL = 'https://finance-proxy.gary9911.workers.dev/?url='; 
+
+// 從此以後，前端只向你的專屬伺服器優雅地請求資料
+const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
         
         for (let p of proxies) {
             try {
