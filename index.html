@@ -525,7 +525,9 @@ const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
         isHistoryLoaded = true; $('history-progress-container').style.display = 'block'; appData.history = [];
         const stocks = [...appData.twStocks.map(s => ({...s, m:'TW'})), ...appData.usStocks.map(s => ({...s, m:'US'}))];
         const tot = stocks.length; let cur = 0;
-        const px = [u=>`https://corsproxy.io/?${encodeURIComponent(u)}`, u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];
+        // 🌟 讓歷史績效也透過你的專屬中繼站抓取資料
+const WORKER_URL = 'https://finance-proxy.gary9911.workers.dev/?url=';
+const px = [ u => `${WORKER_URL}${encodeURIComponent(u)}` ];
         
         for (let s of stocks) {
             await sleep(600); const sym = s.m==='TW' ? `${s.symbol}.TW` : s.symbol; let ok = false;
