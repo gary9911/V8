@@ -476,9 +476,24 @@
         animateVal("tracking-stock-total", appData.totals.stockNet); 
         animateVal("tracking-cash-total", appData.cash);
         
-        const hist = appData.netWorthHistory;
-        if (!hist.length) { ['nw-box','st-box','cs-box'].forEach(id => $(id).innerHTML = '<div style="text-align:center; padding:50px 0; color:var(--text-muted); font-size:13px;">無紀錄</div><canvas style="display:none;"></canvas>'); return; }
-        ['netWorthChart','stockNetChart','cashNetChart'].forEach(id => { if($(id)?.style.display==='none') $(id).parentNode.innerHTML = `<canvas id="${id}"></canvas>`; });
+        const hist = appData.netWorthHistory || [];
+        
+        // 🐛 修正點：確保即使沒有紀錄，畫布依然帶有正確的 ID 在背後待命
+        if (hist.length === 0) { 
+            $('nw-box').innerHTML = '<div style="text-align:center; padding:50px 0; color:var(--text-muted); font-size:13px;">尚無紀錄，請點擊上方「紀錄現值」</div><canvas id="netWorthChart" style="display:none;"></canvas>'; 
+            $('st-box').innerHTML = '<div style="text-align:center; padding:50px 0; color:var(--text-muted); font-size:13px;">尚無紀錄</div><canvas id="stockNetChart" style="display:none;"></canvas>';
+            $('cs-box').innerHTML = '<div style="text-align:center; padding:50px 0; color:var(--text-muted); font-size:13px;">尚無紀錄</div><canvas id="cashNetChart" style="display:none;"></canvas>';
+            chartInst.nw = null; chartInst.stock = null; chartInst.cash = null;
+            return; 
+        }
+        
+        // 🐛 修正點：當有紀錄時，重新喚醒乾淨的畫布，讓 Chart.js 有地方作畫
+        ['netWorthChart','stockNetChart','cashNetChart'].forEach(id => { 
+            const canvas = $(id);
+            if(canvas && canvas.style.display === 'none') {
+                canvas.parentNode.innerHTML = `<canvas id="${id}"></canvas>`;
+            } 
+        });
         
         const lbls = hist.map(i => { let d = new Date(i.date); return isNaN(d.getTime()) ? i.date : `${d.getFullYear().toString().slice(-2)}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; });
         
