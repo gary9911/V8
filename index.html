@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>高奢菁英 | 總資產指揮中心 V16.2</title>
+    <title>高奢菁英 | 總資產指揮中心 V17.0 (極速邊緣版)</title>
     
     <meta name="theme-color" content="#FDFCF8">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -246,7 +246,7 @@
                 <div class="changelog-header"><span class="changelog-title">變更紀錄</span><span class="changelog-badge empty" id="changelog-badge">0</span></div>
                 <div id="changelog-body"><div class="changelog-empty">無變更</div></div>
             </div>
-            <button class="save-to-cloud-btn" id="saveCloudBtn" onclick="saveToCloud()"><i class="fa-solid fa-cloud-arrow-up"></i> 儲存至 Google Sheets</button>
+            <button class="save-to-cloud-btn" id="saveCloudBtn" onclick="saveToCloud()"><i class="fa-solid fa-cloud-arrow-up"></i> 儲存至邊緣金庫</button>
         </div>
     </main>
 
@@ -256,9 +256,11 @@
 
 <script>
     // ============================================================
-    // 🌟 請換成您的 Google Apps Script 網址
+    // 🌟 終極架構：Cloudflare 專屬管家與 KV 邊緣金庫
     // ============================================================
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwImwawawdyp-JE75tjMpSQDW6pYM0SNWQEsC7DeFZIxxxKyyjhmUtdjQdd81MLCTy0sw/exec';
+    const WORKER_URL = 'https://finance-proxy.gary9911.workers.dev/?url='; 
+    const DB_URL = 'https://finance-proxy.gary9911.workers.dev/'; 
+    const SECRET_KEY = 'MySuperSecretWealth2026'; // 必須與 Worker 裡的設定完全一致
     
     const $ = id => document.getElementById(id);
     const appData = { cash: 0, settings: { usdToTwd: 31.5 }, twStocks: [], usStocks: [], history: [], netWorthHistory: [], totals: { grandNet:0, grandCost:0, stockNet:0, stockCost:0, twNet:0, usNet:0 }, marketTime: { tw:null, us:null } };
@@ -278,49 +280,79 @@
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     };
 
-    async function loadFromGoogleSheets() {
-        setCloudStatus('syncing', '讀取資料中...');
+    // ⚡ 改用 Cloudflare KV 讀取資料
+    async function loadFromCloudflareKV() {
+        setCloudStatus('syncing', '讀取邊緣金庫中...');
         try {
-            const res = await fetch(GAS_URL); const data = await res.json();
-            if (data.error) throw new Error(data.error);
+            const res = await fetch(DB_URL, { headers: { 'X-Master-Key': SECRET_KEY } });
+            const data = await res.json();
+            
+            if (Object.keys(data).length === 0) {
+                setCloudStatus('synced', '全新金庫，請新增持股');
+                return true;
+            }
+            
             appData.twStocks = []; appData.usStocks = [];
-            appData.cash = data.cash || 0; appData.netWorthHistory = data.netWorthHistory || []; 
-            data.holdings.forEach(h => {
-                let mkt = String(h.market).replace(/\s+/g, '').toUpperCase();
-                let sym = String(h.symbol).replace(/\s+/g, '').toUpperCase().replace(/\.TW$|\.TWO$/i, '');
-                const obj = { symbol: sym, shares: parseFloat(h.shares)||0, costPrice: parseFloat(h.costPrice)||0, currentPrice: null, prevClose: null, isError: true };
-                if (mkt === 'TW') appData.twStocks.push(obj); else if (mkt === 'US') appData.usStocks.push(obj);
-            });
-            isDataInitialized = true; setCloudStatus('synced', `已載入 ${data.holdings.length} 筆持股`); return true;
-        } catch(e) { setCloudStatus('error', '連線失敗'); return false; }
+            appData.cash = data.cash || 0; 
+            appData.netWorthHistory = data.netWorthHistory || []; 
+            
+            if (data.holdings) {
+                data.holdings.forEach(h => {
+                    const obj = { symbol: h.symbol, shares: parseFloat(h.shares)||0, costPrice: parseFloat(h.costPrice)||0, currentPrice: null, prevClose: null, isError: true };
+                    if (h.market === 'TW') appData.twStocks.push(obj); 
+                    else if (h.market === 'US') appData.usStocks.push(obj);
+                });
+            }
+            
+            isDataInitialized = true; 
+            setCloudStatus('synced', `已載入 ${data.holdings ? data.holdings.length : 0} 筆持股`); 
+            return true;
+        } catch(e) { 
+            setCloudStatus('error', '雲端尚無資料或連線失敗'); 
+            return false; 
+        }
     }
 
+    // ⚡ 改用 Cloudflare KV 寫入資料
     async function saveToCloud() {
-        $('saveCloudBtn').disabled = true; $('saveCloudBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 儲存中...';
-        setCloudStatus('syncing', '儲存中...');
+        $('saveCloudBtn').disabled = true; $('saveCloudBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 極速寫入中...';
+        setCloudStatus('syncing', '寫入邊緣金庫中...');
         const payload = {
             cash: appData.cash,
+            netWorthHistory: appData.netWorthHistory,
             holdings: [
                 ...appData.twStocks.map(s => ({ market:'TW', symbol:s.symbol, shares:s.shares, costPrice:s.costPrice })),
                 ...appData.usStocks.map(s => ({ market:'US', symbol:s.symbol, shares:s.shares, costPrice:s.costPrice }))
             ]
         };
         try {
-            const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }); const result = await res.json();
-            if (result.success) { setCloudStatus('synced', '✅ 儲存成功'); showToast('☁️ 已同步！'); changelog.length = 0; renderChangelog(); } 
-            else throw new Error(result.error);
-        } catch(e) { setCloudStatus('error', '❌ 失敗：' + e.message); showToast('❌ 儲存失敗'); } 
-        finally { $('saveCloudBtn').disabled = false; $('saveCloudBtn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> 儲存至 Google Sheets'; }
+            const res = await fetch(DB_URL, { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': SECRET_KEY
+                },
+                body: JSON.stringify(payload) 
+            }); 
+            const result = await res.json();
+            if (result.success) { 
+                setCloudStatus('synced', '✅ 極速儲存成功'); 
+                showToast('⚡ 邊緣節點已同步！'); 
+                changelog.length = 0; renderChangelog(); 
+            } else throw new Error(result.error);
+        } catch(e) { 
+            setCloudStatus('error', '❌ 寫入失敗'); showToast('❌ 寫入失敗'); 
+        } finally { 
+            $('saveCloudBtn').disabled = false; $('saveCloudBtn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> 儲存至邊緣金庫'; 
+        }
     }
 
     async function fetchHybridYahooQuotes(symbolsArray) {
         if(symbolsArray.length === 0) return {};
         const priceMap = {}; let missing = [...symbolsArray];
-        // 🌟 大師級架構：專屬 Cloudflare 中繼站
-const WORKER_URL = 'https://finance-proxy.gary9911.workers.dev/?url='; 
-
-// 從此以後，前端只向你的專屬伺服器優雅地請求資料
-const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
+        
+        // 🌟 核心引擎：使用專屬的 Cloudflare 中繼站
+        const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
         
         for (let p of proxies) {
             try {
@@ -368,7 +400,8 @@ const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
     async function refreshData() {
         $('syncBtn').classList.add('spin'); $('last-update').innerText = "載入中...";
         try {
-            await loadFromGoogleSheets(); await fetchPricesAndRender();
+            await loadFromCloudflareKV(); 
+            await fetchPricesAndRender();
             $('last-update').innerText = `同步完成：${fmtTime(new Date().getTime())}`; isHistoryLoaded = false;
             $('history-list-container').innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:13px;">請重新載入歷史數據</div>';
         } catch(e) { $('last-update').innerText = "載入失敗"; } finally { $('syncBtn').classList.remove('spin'); }
@@ -458,7 +491,7 @@ const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
         chartInst.cash = drawLineChart(chartInst.cash, 'cashNetChart', lbls, cashData, '現金', '#3A4A63', 'rgba(58,74,99,0.1)');
     }
 
-    // ✨ 核心修正：精準發送四個數值並強制轉換格式
+    // ⚡ 改用 KV 存檔邏輯
     async function saveCurrentNetWorth() {
         if(appData.totals.grandNet <= 0) return showToast('⚠️ 總資產異常');
         $('saveNwBtn').disabled = true; $('saveNwBtn').innerText = '儲存中...';
@@ -472,8 +505,7 @@ const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
         };
         appData.netWorthHistory.push(nr); renderTrackingChart();
         try { 
-            const res = await (await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({newNetWorth: nr}) })).json(); 
-            if(!res.success) throw new Error(res.error); 
+            await saveToCloud(); // 呼叫極速邊緣寫入
             showToast('📈 存檔成功！'); 
         } 
         catch(e) { 
@@ -525,12 +557,13 @@ const proxies = [ url => `${WORKER_URL}${encodeURIComponent(url)}` ];
         isHistoryLoaded = true; $('history-progress-container').style.display = 'block'; appData.history = [];
         const stocks = [...appData.twStocks.map(s => ({...s, m:'TW'})), ...appData.usStocks.map(s => ({...s, m:'US'}))];
         const tot = stocks.length; let cur = 0;
-        // 🌟 讓歷史績效也透過你的專屬中繼站抓取資料
-const WORKER_URL = 'https://finance-proxy.gary9911.workers.dev/?url=';
-const px = [ u => `${WORKER_URL}${encodeURIComponent(u)}` ];
+        
+        // 🌟 核心引擎：歷史績效矩陣也改用專屬 Cloudflare 管家
+        const px = [ u => `${WORKER_URL}${encodeURIComponent(u)}` ];
         
         for (let s of stocks) {
-            await sleep(600); const sym = s.m==='TW' ? `${s.symbol}.TW` : s.symbol; let ok = false;
+            await sleep(100); // 極速版，只需短暫等待 100 毫秒即可
+            const sym = s.m==='TW' ? `${s.symbol}.TW` : s.symbol; let ok = false;
             for (let p of px) {
                 if(ok) break; try {
                     const res = await fetch(p(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=6mo`)); if(!res.ok) continue;
@@ -547,7 +580,9 @@ const px = [ u => `${WORKER_URL}${encodeURIComponent(u)}` ];
         }
         $('history-progress-container').style.display = 'none'; $('history-status').innerText = "運算完成"; renderHistory();
     }
+    
     function setHeroMode(m, el) { currentHeroMode = m; document.querySelectorAll('.history-controls .hero-btn').forEach(b => b.classList.remove('active-hero')); el.classList.add('active-hero'); renderHistory(); }
+    
     function renderHistory() {
         const div = $('history-list-container'); if(!appData.history.length) return div.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted)">無數據</div>';
         let d = [...appData.history].sort((a,b) => currentHeroMode==='d1Pct' ? b.d1-a.d1 : (currentHeroMode==='d1Profit' ? b.pD1-a.pD1 : b.pM1-a.pM1));
